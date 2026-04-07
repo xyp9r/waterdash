@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import HomeTab from './components/HomeTab';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
@@ -21,9 +22,7 @@ export default function App() {
         {/* Главный экран (меняется в зависимости от вкладки) */}
         <main className="flex-1 overflow-y-auto p-6">
           {activeTab === 'home' && (
-              <div className="flex flex-col items-center justify-center h-full text-slate-500">
-                [ тут будет огромный круг прогресса воды ]
-              </div>
+              <HomeTab />
             )}
           {activeTab === 'history' && (
               <div className="text-slate-400">
