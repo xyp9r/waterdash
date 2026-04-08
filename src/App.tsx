@@ -38,7 +38,7 @@ export default function App() {
             )}
           {activeTab === 'settings' && (
               <div className="text-slate-400">
-                <h2 clasName="text-xl text-white mb-4">Settings</h2>
+                <h2 className="text-xl text-white mb-4">Settings</h2>
                 [ Переключатель тем и норма воды ]
               </div>
             )}
