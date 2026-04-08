@@ -10,25 +10,57 @@ export interface WaterLog {
   timestamp: string;
 }
 
-export default function App() {
-  // 2. Cтейт для переключения вкладок (по умолчания открыт Home)
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+// Описываем структуру умной памяти
+interface AppState {
+  currentDate: string;
+  todayLogs: WaterLog[];
+}
 
-  // --- ПЕРЕЕЗД ПАМЯТИ СЮДА ---
-  const [currentWater, setCurrentWater] = useState(() => {
-    const saved = localStorage.getItem('waterDash_current');
-    return saved ? Number(saved) : 0;
+export default function App() {
+  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const goalWater = 2000;
+
+  // ЭВОЛЮЦИЯ ПАМЯТИ
+  const [appData, setAppData] = useState<AppState>(() => {
+    const saved = localStorage.getItem('waterDash_data');
+    const today = new Date().toISOString().split('T')[0]; // Получаем дату типа "2026-04-08"
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // МАГИЯ АВТОСБРОСА - Если дата в памяти не совпадает с сегодняшней
+      if (parsed.currentDate !== today) {
+        // (позде мы будем сохранять вчерашний день в историю а пока начинаем с чистого листа)
+        return { currentDate: today, todayLogs: [] };
+      }
+      return parsed; // Если день тот же, загружаем наши логи
+    }
+
+    // Если пользователь зашел в приложение в самый первый раз
+    return { currentDate: today, todayLogs: [] };
   });
 
-  const goalWater = 2000; 
+  // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
+  const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
 
+  // Шпион следит за объектом appData и сохраняет его как JSON
   useEffect(() => {
-    localStorage.setItem('waterDash_current', currentWater.toString());
-  }, [currentWater]);
+    localStorage.setItem('waterDash_data', JSON.stringify(appData));
+  }, [appData]);
 
+  // Теперь кнопка добавляем не просто цифру а подробную запись ( лог )
   const handleAddWater = () => {
-    setCurrentWater(prev => prev + 250);
+    const newLog: WaterLog = {
+    id: Date.now().toString(), // Генерируем уникальный ID
+    amount: 250,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Время типа "14:30"
   };
+
+  // Обновляем стейт: берем старые данные и дописываем новый лог
+  setAppData(prev => ({
+    ...prev,
+    todayLogs: [...prev.todayLogs, newLog]
+  }));
+};
 
   return (
     // Главный фон на десктопе (очень темный синий)
