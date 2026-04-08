@@ -1,12 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HomeTab from './components/HomeTab';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
 
+export interface WaterLog {
+  id: string;
+  amount: number;
+  timestamp: string;
+}
+
 export default function App() {
   // 2. Cтейт для переключения вкладок (по умолчания открыт Home)
   const [activeTab, setActiveTab] = useState<Tab>('home');
+
+  // --- ПЕРЕЕЗД ПАМЯТИ СЮДА ---
+  const [currentWater, setCurrentWater] = useState(() => {
+    const saved = localStorage.getItem('waterDash_current');
+    return saved ? Number(saved) : 0;
+  });
+
+  const goalWater = 2000; 
+
+  useEffect(() => {
+    localStorage.setItem('waterDash_current', currentWater.toString());
+  }, [currentWater]);
+
+  const handleAddWater = () => {
+    setCurrentWater(prev => prev + 250);
+  };
 
   return (
     // Главный фон на десктопе (очень темный синий)
@@ -22,7 +44,11 @@ export default function App() {
         {/* Главный экран (меняется в зависимости от вкладки) */}
         <main className="flex-1 overflow-y-auto p-6">
           {activeTab === 'home' && (
-              <HomeTab />
+              <HomeTab 
+                currentWater={currentWater}
+                goalWater={goalWater}
+                onAddWater={handleAddWater}
+                />
             )}
           {activeTab === 'history' && (
               <div className="text-slate-400">
