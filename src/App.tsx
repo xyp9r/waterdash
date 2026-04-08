@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import HomeTab from './components/HomeTab';
+import HistoryTab from './components/HistoryTab';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
@@ -83,10 +84,7 @@ export default function App() {
                 />
             )}
           {activeTab === 'history' && (
-              <div className="text-slate-400">
-                <h2 className="text-xl text-white mb-4">Today's Logs</h2>
-                [ Список выпитого за сегодня ]
-              </div>
+              <HistoryTab logs={appData.todayLogs} />
             )}
           {activeTab === 'drinks' && (
               <div className="text-slate-400">
