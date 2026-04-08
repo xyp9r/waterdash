@@ -17,7 +17,7 @@ export default function HistoryTab({ logs }: HistoryTabProps) {
 				</div>
 				) : (
 				/* Если логи есть - рисуем их списком */
-				<div className="flex-1 overflow-y-auto pr-2 space-y-3">
+				<div className="flex-1 overflow-y-auto pr-2 space-y-3 no-scrollbar">
 					{[...logs].reverse().map((log) => (
 							<div
 								key={log.id}
