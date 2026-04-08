@@ -6,7 +6,7 @@ interface HistoryTabProps {
 
 export default function HistoryTab({ logs }: HistoryTabProps) {
 	return (
-		<div className="flex flex-col h-full pb-10">
+		<div className="flex flex-col h-full">
 			<h2 className="text-2xl font-bold text-white mb-6">Today's Logs</h2>
 
 			{/* Проверка - если список пустой, показываем красивую заглушку */}

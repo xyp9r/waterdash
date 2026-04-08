@@ -9,7 +9,7 @@ const DRINK_TYPES = [
 
 export default function DrinksTab() {
 	return (
-		<div className="flex flex-col h-full pb-10">
+		<div className="flex flex-col h-full">
 			<h2 className="text-2xl font-bold text-white mb-6">Choose a Drink</h2>
 		
 		{/* Магия сетки (grid) - выстраиваем карточки в 2 колонки */}
