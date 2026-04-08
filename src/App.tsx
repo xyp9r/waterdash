@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import HomeTab from './components/HomeTab';
 import HistoryTab from './components/HistoryTab';
+import DrinksTab from './components/DrinksTab';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
@@ -75,7 +76,7 @@ export default function App() {
         </header>
 
         {/* Главный экран (меняется в зависимости от вкладки) */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 no-scrollbar">
           {activeTab === 'home' && (
               <HomeTab 
                 currentWater={currentWater}
@@ -87,10 +88,7 @@ export default function App() {
               <HistoryTab logs={appData.todayLogs} />
             )}
           {activeTab === 'drinks' && (
-              <div className="text-slate-400">
-                <h2 className="text-xl text-white mb-4">My Drinks</h2>
-                [ Каталог напитков и кнопка добавления ]
-              </div>
+              <DrinksTab />
             )}
           {activeTab === 'settings' && (
               <div className="text-slate-400">
