@@ -1,7 +1,15 @@
+import { useState } from 'react';
+
+
 export default function HomeTab() {
-	// Пока захардкодим данные (потом они будут браться из стейта/базы)
-	const currentWater = 1250;
+	// 1. создаем стейт (память компонента) Начнем с 0мл
+	const [currentWater, setCurrentWater] = useState(0);
 	const goalWater = 2000;
+
+	// 2. Функция, которая срабатывает по клику
+	const handleAddWater = () => {
+			setCurrentWater(prev => prev + 250);
+	}
 
 	// Математика для круга
 	const percentage = Math.min((currentWater / goalWater) * 100, 100);
@@ -52,8 +60,11 @@ export default function HomeTab() {
 			</div>
 
 			{/* кнопка быстрого добавления (ЗАГЛУШКА НА БУДУЩЕЕ) */}
-			<button className="mt-12 bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-400 active:scale-95 transition-all shadow-[0_0_20px_rgba(59,130,246,0.5)]">
-				+ Add Water
+			<button 
+				onClick={handleAddWater}
+				className="mt-12 bg-blue-500 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-400 active:scale-95 transition-all shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+			>
+				+ Add 250 ml
 			</button>
 
 		</div>
