@@ -7,7 +7,13 @@ const DRINK_TYPES = [
   	{ id: 'energy', name: 'Energy', icon: '⚡', color: 'bg-yellow-400/20 text-yellow-400', defaultAmount: 500 },
 ];
 
-export default function DrinksTab() {
+// Описываю провода , которые ждем от App.tsx
+interface DrinksTabProps {
+	onAddDrink: (amount: number, name: string, icon: string) => void;
+}
+
+// Принимаем запрос в пропсах
+export default function DrinksTab({ onAddDrink }: DrinksTabProps) {
 	return (
 		<div className="flex flex-col h-full">
 			<h2 className="text-2xl font-bold text-white mb-6">Choose a Drink</h2>
@@ -19,6 +25,8 @@ export default function DrinksTab() {
 				{DRINK_TYPES.map((drink) => (
 					<button
 						key={drink.id}
+						// Вешаем клик
+						onClick={() => onAddDrink(drink.defaultAmount, drink.name, drink.icon)}
 						className="bg-slate-800 p-5 rounded-2xl flex flex-col items-center justify-center gap-3 shadow-sm border border-slate-700/50 hover:border-slate-500 transition-all active:scale-95"
 					>
 							{/* Круглый фон для иконки с уникальным цветом */}

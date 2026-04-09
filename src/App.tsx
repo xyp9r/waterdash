@@ -10,6 +10,9 @@ export interface WaterLog {
   id: string;
   amount: number;
   timestamp: string;
+  // ДОБАВИЛ НОВЫЕ СТРОЧКИ
+  name: string;
+  icon: string;
 }
 
 // Описываем структуру умной памяти
@@ -50,11 +53,18 @@ export default function App() {
   }, [appData]);
 
   // Теперь кнопка добавляем не просто цифру а подробную запись ( лог )
-  const handleAddWater = () => {
+  const handleAddDrink = (amount: number, name: string, icon: string) => {
+     // Магия UX: после добавления напитска сразу перекидываем юзера на главный экран
+    setActiveTab('home');
+
+    // Задержка в 100мс
+    setTimeout(() => {
     const newLog: WaterLog = {
     id: Date.now().toString(), // Генерируем уникальный ID
     amount: 250,
-    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Время типа "14:30"
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Время типа "14:30"
+    name: name,
+    icon: icon
   };
 
   // Обновляем стейт: берем старые данные и дописываем новый лог
@@ -62,6 +72,7 @@ export default function App() {
     ...prev,
     todayLogs: [...prev.todayLogs, newLog]
   }));
+}, 100);
 };
 
   return (
@@ -81,14 +92,16 @@ export default function App() {
               <HomeTab 
                 currentWater={currentWater}
                 goalWater={goalWater}
-                onAddWater={handleAddWater}
+                // Передаем дефолтную воду для главной кнопки:
+                onAddWater={() => handleAddDrink(250, 'Water', '💧')}
                 />
             )}
           {activeTab === 'history' && (
               <HistoryTab logs={appData.todayLogs} />
             )}
           {activeTab === 'drinks' && (
-              <DrinksTab />
+            // Прокидываем нашу новую функцию во вкладку напитков:
+              <DrinksTab onAddDrink={handleAddDrink}/>
             )}
           {activeTab === 'settings' && (
               <div className="text-slate-400">

@@ -24,12 +24,12 @@ export default function HistoryTab({ logs }: HistoryTabProps) {
 								className="bg-slate-800 p-4 rounded-xl flex items-center justify-between shadow-sm border border-slate-700/50 hover:border-blue-500/30 transition-colors"
 								>
 									<div className="flex items-center gap-4">
-										<div className="bg-blue-500/20 p-2 rounded-lg">
-											<span className="text-xl">💧</span>
+										<div className="bg-blue-700/50 p-2 rounded-lg">
+											<span className="text-xl">{log.icon}</span>
 										</div>
 										<div className="flex flex-col">
 											<span className="text-white font-bold">{log.amount} ml</span>
-											<span className="text-slate-400 text-xs">Water</span>
+											<span className="text-slate-400 text-xs">{log.name}</span>
 										</div>
 									</div>
 									<span className="text-slate-500 text-sm font-medium bg-slate-900 px-3 py-1 rounded-md">
