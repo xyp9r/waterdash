@@ -75,6 +75,15 @@ export default function App() {
 }, 100);
 };
 
+// Функция удаления лога по его уникальному ID
+const handleDeleteLog = (idToRemove: string) => {
+  setAppData(prev => ({
+    ...prev,
+    // filter оставляет только те логи, ID которых НЕ совпадает с тем что мы удаляем
+    todayLogs: prev.todayLogs.filter(log => log.id !== idToRemove)
+  }));
+};
+
   return (
     // Главный фон на десктопе (очень темный синий)
     <div className="min-h-screen bg-slate-950 text-slate-100 flex justify-center font-sans">
@@ -97,7 +106,10 @@ export default function App() {
                 />
             )}
           {activeTab === 'history' && (
-              <HistoryTab logs={appData.todayLogs} />
+              <HistoryTab 
+                logs={appData.todayLogs} 
+                onDeleteLog={handleDeleteLog} // провод удаления
+                />
             )}
           {activeTab === 'drinks' && (
             // Прокидываем нашу новую функцию во вкладку напитков:
