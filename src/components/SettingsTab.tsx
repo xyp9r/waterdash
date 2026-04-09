@@ -13,11 +13,20 @@ export default function SettingsTab({ currentGoal, onUpdateGoal }: SettingsTabPr
 
 	const handleSave = () => {
 		// Превращаем текст из инпута в нормальное число
-		const newGoal = parseInt(goalInput, 10);
+		let newGoal = parseInt(goalInput, 10);
 
 		// Защита от дурака, проверяем что ввели число и оно больше нуля
 		if (!isNaN(newGoal) && newGoal > 0) {
+
+			// Лимит максимум 10 литров
+			if (newGoal > 10000) {
+				newGoal = 10000;
+			}
+
 			onUpdateGoal(newGoal);
+		} else {
+			// Если ввели минус или пустоту возвращаем нормальную цифру
+			setGoalInput(currentGoal.toString());
 		}
 	};
 
@@ -47,7 +56,7 @@ export default function SettingsTab({ currentGoal, onUpdateGoal }: SettingsTabPr
 							</button>
 						</div>
 						<p className="text-slate-500 text-xs mt-3">
-							Adjust your daily hydration target. The progress ring will update automatically.
+							Adjust your daily hydration target (Max: 10000 ml). The progress ring will update automatically.
 						</p>
 					</div>
 				</div>
