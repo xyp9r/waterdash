@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import HomeTab from './components/HomeTab';
 import HistoryTab from './components/HistoryTab';
 import DrinksTab from './components/DrinksTab';
+import SettingsTab from './components/SettingsTab';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
@@ -19,11 +20,11 @@ export interface WaterLog {
 interface AppState {
   currentDate: string;
   todayLogs: WaterLog[];
+  goalWater: number; // <--- Новая ячейка памяти для гола воды
 }
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
-  const goalWater = 2000;
 
   // ЭВОЛЮЦИЯ ПАМЯТИ
   const [appData, setAppData] = useState<AppState>(() => {
@@ -34,18 +35,26 @@ export default function App() {
       const parsed = JSON.parse(saved);
       // МАГИЯ АВТОСБРОСА - Если дата в памяти не совпадает с сегодняшней
       if (parsed.currentDate !== today) {
-        // (позде мы будем сохранять вчерашний день в историю а пока начинаем с чистого листа)
-        return { currentDate: today, todayLogs: [] };
+        // Если новый день - сбрасываем логи, но сохраняем цель
+        return { currentDate: today, todayLogs: [], goalWater: parsed.goalWater || 2000 };
       }
-      return parsed; // Если день тот же, загружаем наши логи
+      return { ...parsed, goalWater: parsed.goalWater || 2000 }; // Если день тот же, загружаем наши логи, Если цели раньше не было - ставим 2000
     }
 
     // Если пользователь зашел в приложение в самый первый раз
-    return { currentDate: today, todayLogs: [] };
+    return { currentDate: today, todayLogs: [], goalWater: 2000 };
   });
 
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
   const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
+  // Теперь цель береться из памяти а не из хардкора!
+  const goalWater = appData.goalWater;
+
+  // Функция для обновления цели
+  const handleUpdateGoal = (newGoal: number) => {
+    setAppData(prev => ({ ...prev, goalWater: newGoal}));
+    setActiveTab('home'); // сразу перекидываем на главную чтобы увидеть результат
+  };
 
   // Шпион следит за объектом appData и сохраняет его как JSON
   useEffect(() => {
@@ -116,10 +125,10 @@ const handleDeleteLog = (idToRemove: string) => {
               <DrinksTab onAddDrink={handleAddDrink}/>
             )}
           {activeTab === 'settings' && (
-              <div className="text-slate-400">
-                <h2 className="text-xl text-white mb-4">Settings</h2>
-                [ Переключатель тем и норма воды ]
-              </div>
+              <SettingsTab 
+                currentGoal={goalWater}
+                onUpdateGoal={handleUpdateGoal}
+                />
             )}
         </main>
 
