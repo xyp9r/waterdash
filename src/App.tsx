@@ -3,6 +3,7 @@ import HomeTab from './components/HomeTab';
 import HistoryTab from './components/HistoryTab';
 import DrinksTab from './components/DrinksTab';
 import SettingsTab from './components/SettingsTab';
+import Onboarding from './components/Onboarding';
 
 // 1. строго описываем наши 4 главные вкладки
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
@@ -21,6 +22,7 @@ interface AppState {
   currentDate: string;
   todayLogs: WaterLog[];
   goalWater: number; // <--- Новая ячейка памяти для гола воды
+  isFirstFaunch: boolean; // ДОБАВИЛ ФЛАГ ДЛЯ ПЕРВОГО ЗАПУСКА
 }
 
 export default function App() {
@@ -36,13 +38,13 @@ export default function App() {
       // МАГИЯ АВТОСБРОСА - Если дата в памяти не совпадает с сегодняшней
       if (parsed.currentDate !== today) {
         // Если новый день - сбрасываем логи, но сохраняем цель
-        return { currentDate: today, todayLogs: [], goalWater: parsed.goalWater || 2000 };
+        return { currentDate: today, todayLogs: [], goalWater: parsed.goalWater || 2000, isFirstFaunch: parsed.isFirstFaunch ?? false };
       }
       return { ...parsed, goalWater: parsed.goalWater || 2000 }; // Если день тот же, загружаем наши логи, Если цели раньше не было - ставим 2000
     }
 
     // Если пользователь зашел в приложение в самый первый раз
-    return { currentDate: today, todayLogs: [], goalWater: 2000 };
+    return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstFaunch: true };
   });
 
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
@@ -54,6 +56,14 @@ export default function App() {
   const handleUpdateGoal = (newGoal: number) => {
     setAppData(prev => ({ ...prev, goalWater: newGoal}));
     setActiveTab('home'); // сразу перекидываем на главную чтобы увидеть результат
+  };
+
+  const handleOnboardingComplete = (calculatedGoal: number) => {
+    setAppData(prev => ({
+      ...prev,
+      goalWater: calculatedGoal,
+      isFirstFaunch: false // Выключаем приветственный экран навсегда
+    }));
   };
 
   // Шпион следит за объектом appData и сохраняет его как JSON
@@ -92,6 +102,11 @@ const handleDeleteLog = (idToRemove: string) => {
     todayLogs: prev.todayLogs.filter(log => log.id !== idToRemove)
   }));
 };
+
+// Если первый запуск - показываем приветствие и ничо не рисуем
+if (appData.isFirstFaunch) {
+  return <Onboarding onComplete={handleOnboardingComplete} />;
+}
 
   return (
     // Главный фон на десктопе (очень темный синий)
