@@ -80,7 +80,7 @@ export default function App() {
     setTimeout(() => {
     const newLog: WaterLog = {
     id: Date.now().toString(), // Генерируем уникальный ID
-    amount: 250,
+    amount: amount,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Время типа "14:30"
     name: name,
     icon: icon
