@@ -23,7 +23,7 @@ interface AppState {
   todayLogs: WaterLog[];
   goalWater: number; // <--- Новая ячейка памяти для гола воды
   isFirstLaunch: boolean; // ДОБАВИЛ ФЛАГ ДЛЯ ПЕРВОГО ЗАПУСКА
-  historyData: Record<string, number>; // Память для архива (дата: миллилитры)
+  historyData: Record<string, WaterLog[]>; // Память для архива (дата - напиток - миллилитры)
 }
 
 export default function App() {
@@ -46,9 +46,9 @@ export default function App() {
         // 2. Достаем старых архив (если он есть) или создаем пустой
         const oldHistory = parsed.historyData || {};
 
-        // 3. Если "вчера" юзер выпил хоть что-то, сохраняем это в архив под старой датой
-        if (yesterdayTotal > 0 && parsed.currentDate) {
-          oldHistory[parsed.currentDate] = yesterdayTotal;
+        // Если "вчера" были хоть какие-то логи, берем ВЕСЬ массив и кладем в архив под старой датой
+        if (parsed.todayLogs && parsed.todayLogs.length > 0 && parsed.currentDate) {
+          oldHistory[parsed.currentDate] = parsed.todayLogs;
         }
 
         // 4. Начинаем новый день с чистым todayLogs, но сохраняем архив
