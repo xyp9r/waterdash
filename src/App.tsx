@@ -22,7 +22,8 @@ interface AppState {
   currentDate: string;
   todayLogs: WaterLog[];
   goalWater: number; // <--- Новая ячейка памяти для гола воды
-  isFirstFaunch: boolean; // ДОБАВИЛ ФЛАГ ДЛЯ ПЕРВОГО ЗАПУСКА
+  isFirstLaunch: boolean; // ДОБАВИЛ ФЛАГ ДЛЯ ПЕРВОГО ЗАПУСКА
+  historyData: Record<string, number>; // Память для архива (дата: миллилитры)
 }
 
 export default function App() {
@@ -35,17 +36,43 @@ export default function App() {
 
     if (saved) {
       const parsed = JSON.parse(saved);
-      // МАГИЯ АВТОСБРОСА - Если дата в памяти не совпадает с сегодняшней
-      if (parsed.currentDate !== today) {
-        // Если новый день - сбрасываем логи, но сохраняем цель
-        return { currentDate: today, todayLogs: [], goalWater: parsed.goalWater || 2000, isFirstFaunch: parsed.isFirstFaunch ?? false };
-      }
-      return { ...parsed, goalWater: parsed.goalWater || 2000 }; // Если день тот же, загружаем наши логи, Если цели раньше не было - ставим 2000
-    }
 
-    // Если пользователь зашел в приложение в самый первый раз
-    return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstFaunch: true };
-  });
+      // МАГИЯ АВТОСБРОСА И АРХИВАЦИИ
+      if (parsed.currentDate !== today) {
+
+        // 1. Считаем, сколько воды было выпито "вчера" (или в последний день захода)
+        const yesterdayTotal = parsed.todayLogs ? parsed.todayLogs.reduce((sum: number, log: WaterLog) => sum + log.amount, 0) : 0;
+
+        // 2. Достаем старых архив (если он есть) или создаем пустой
+        const oldHistory = parsed.historyData || {};
+
+        // 3. Если "вчера" юзер выпил хоть что-то, сохраняем это в архив под старой датой
+        if (yesterdayTotal > 0 && parsed.currentDate) {
+          oldHistory[parsed.currentDate] = yesterdayTotal;
+        }
+
+        // 4. Начинаем новый день с чистым todayLogs, но сохраняем архив
+        return {
+          currentDate: today,
+          todayLogs: [],
+          goalWater: parsed.goalWater || 2000,
+          isFirstLaunch: parsed.isFirstLaunch ?? false,
+          historyData: oldHistory
+        };
+      }
+
+      // Если день тот же самый, грузим всё как есть
+      return {
+        ...parsed,
+        goalWater: parsed.goalWater || 2000,
+        isFirstLaunch: parsed.isFirstLaunch ?? false,
+        historyData: parsed.historyData || {}
+      };
+  }
+
+  // Если пользователь зашел в приложение в первый раз
+  return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstLaunch: true, historyData: {} };
+});
 
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
   const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
@@ -62,7 +89,7 @@ export default function App() {
     setAppData(prev => ({
       ...prev,
       goalWater: calculatedGoal,
-      isFirstFaunch: false // Выключаем приветственный экран навсегда
+      isFirstLaunch: false // Выключаем приветственный экран навсегда
     }));
   };
 
@@ -104,7 +131,7 @@ const handleDeleteLog = (idToRemove: string) => {
 };
 
 // Если первый запуск - показываем приветствие и ничо не рисуем
-if (appData.isFirstFaunch) {
+if (appData.isFirstLaunch) {
   return <Onboarding onComplete={handleOnboardingComplete} />;
 }
 
@@ -133,6 +160,7 @@ if (appData.isFirstFaunch) {
               <HistoryTab 
                 logs={appData.todayLogs} 
                 onDeleteLog={handleDeleteLog} // провод удаления
+                historyData={appData.historyData} // Подключил историю того что мы пили
                 />
             )}
           {activeTab === 'drinks' && (
