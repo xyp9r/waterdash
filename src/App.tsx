@@ -74,6 +74,20 @@ export default function App() {
   return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstLaunch: true, historyData: {} };
 });
 
+      // ПЕРВОЕ КАСАНИЕ БЭКЕНДА (Тестовый запрос)
+    useEffect(() => {
+                  // Делаем HTTP-Запрос (отправляем официанта)
+                  fetch('http://localhost:3000/api/status')
+                    .then((response) => response.json()) // Ждем ответ и распаковываем
+                    .then((data) => {
+                      // Если всё успешно, выводим сообщение от повара в консоль браузера
+                      console.log("🔥 ОТВЕТ ОТ СЕРВЕРА:", data.message);
+                    })
+                    .catch((error) => {
+                      console.error("❌ Сервер молчит или недоступен:", error);
+                    });
+    }, []); // Пустые скобки означают сделать это один раз при загрузке
+
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
   const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
   // Теперь цель береться из памяти а не из хардкора!
