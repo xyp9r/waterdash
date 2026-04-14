@@ -19,15 +19,15 @@ A modern, mobile-first web application for tracking daily hydration with custom 
 
 ## 🚀 Roadmap (Phases of Development)
 
-### 🟢 Phase 1: MVP Frontend (Local Storage)
-* [ ] Initialize React + TS + Tailwind + Vite project.
-* [ ] Setup UI shell (Header, Bottom Nav, Theme Provider).
-* [ ] Build Home Dashboard (Circular Progress, Quick Add buttons).
-* [ ] Build History Tab (List of today's drinks with delete option).
-* [ ] Build Data Types (TypeScript interfaces for `Drink`, `Log`).
-* [ ] Logic: Save and retrieve data from browser `LocalStorage`.
+### 🟢 Phase 1: MVP Frontend (Local Storage) - ✅ COMPLETED
+* [x] Initialize React + TS + Tailwind + Vite project.
+* [x] Setup UI shell (Header, Bottom Nav, Theme Provider).
+* [x] Build Home Dashboard (Circular Progress, Quick Add buttons).
+* [x] Build History Tab (List of today's drinks with delete option).
+* [x] Build Data Types (TypeScript interfaces for `Drink`, `Log`).
+* [x] Logic: Save and retrieve data from browser `LocalStorage`.
 
-### 🟡 Phase 2: The Backend Engine
+### 🟡 Phase 2: The Backend Engine (IN PROGRESS)
 * [ ] Initialize Node.js + Express + TS environment.
 * [ ] Setup Docker and PostgreSQL database.
 * [ ] Setup Prisma ORM and create database schemas (Users, DrinkLogs).
@@ -35,5 +35,11 @@ A modern, mobile-first web application for tracking daily hydration with custom 
 
 ### 🔴 Phase 3: Auth & Social (The Big League)
 * [ ] User Registration & Login (JWT Auth).
-* [ ] Connect Frontend to Backend (replace LocalStorage with real API fetches).
-* [ ] Add "Friends" system (Invite links, see friends' progress).
+* [ ] Connect Frontend to Backend (replace LocalStorage with real API calls).
+* [ ] Leaderboards or Friends system (optional).
+
+### 🟣 Phase 4: Desktop Dashboard & Responsive Mastery
+* [ ] Fully responsive layout (mobile-first → desktop).
+* [ ] Desktop UI: Creation of a comprehensive desktop dashboard (everything on a single screen: statistics, charts, drink-adding panel).
+* [ ] Mobile UI: Preserving the native mobile experience in the WaterMinder style (bottom navigation bar, pop-up panels).
+* [ ] Complex responsiveness logic: a tough battle with CSS (`flex`, `grid`, `hidden md:block`) to ensure the interface doesn’t break on any device.
