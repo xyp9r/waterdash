@@ -28,10 +28,10 @@ A modern, mobile-first web application for tracking daily hydration with custom 
 * [x] Logic: Save and retrieve data from browser `LocalStorage`.
 
 ### 🟡 Phase 2: The Backend Engine (IN PROGRESS)
-* [ ] Initialize Node.js + Express + TS environment.
-* [ ] Setup Docker and PostgreSQL database.
-* [ ] Setup Prisma ORM and create database schemas (Users, DrinkLogs).
-* [ ] Build CRUD API endpoints (Create, Read, Update, Delete logs).
+* [x] Initialize Node.js + Express + TS environment.
+* [x] Setup Docker and PostgreSQL database.
+* [x] Setup Prisma ORM and create database schemas (Users, DrinkLogs).
+* [x] Build CRUD API endpoints (Create, Read, Update, Delete logs).
 
 ### 🔴 Phase 3: Auth & Social (The Big League)
 * [ ] User Registration & Login (JWT Auth).
