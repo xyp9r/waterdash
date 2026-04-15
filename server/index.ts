@@ -72,6 +72,32 @@ app.get('/api/logs', async (req: Request, res: Response) => {
 	}
 });
 
+// ==========================================
+// УДАЛЯЕМ ИЗ БАЗЫ: Сносим стакан навсегда
+// ==========================================
+// Обрати внимание на ":id" в ссылке. Это переменная!
+
+app.delete('/api/logs/:id', async (req: Request, res: Response) => {
+	try {
+			// Достаем ID прямо из ссылки браузера
+			const logId = req.params.id as string;
+
+			// Говорим Присме: "Найди запись с этим ID и уничтожь её"
+			await prisma.waterLog.delete({
+				where: {
+					id: logId
+				}
+			});
+
+			console.log(`🗑️ Успешно удалили запись с ID: ${logId}`);
+			res.json({ success: true, message: "Запись стерта из истории!" });
+
+	} catch (error) {
+			console.error("❌ Ошибка при удалении из базы:", error);
+			res.status(500).json({ success: false, error: "Не удалось удалить данные" });
+	}
+});
+
 // Запуск
 app.listen(PORT, () => {
 				console.log(`🚀 Бэкенд WaterDash успешно запущен на http://localhost:${PORT}`);

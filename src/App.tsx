@@ -74,19 +74,33 @@ export default function App() {
   return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstLaunch: true, historyData: {} };
 });
 
-      // ПЕРВОЕ КАСАНИЕ БЭКЕНДА (Тестовый запрос)
-    useEffect(() => {
-                  // Делаем HTTP-Запрос (отправляем официанта)
-                  fetch('http://localhost:3000/api/status')
-                    .then((response) => response.json()) // Ждем ответ и распаковываем
-                    .then((data) => {
-                      // Если всё успешно, выводим сообщение от повара в консоль браузера
-                      console.log("🔥 ОТВЕТ ОТ СЕРВЕРА:", data.message);
-                    })
-                    .catch((error) => {
-                      console.error("❌ Сервер молчит или недоступен:", error);
-                    });
-    }, []); // Пустые скобки означают сделать это один раз при загрузке
+  // Загружаем данные из базы при старте
+  useEffect(() => {
+              // Стучимся на наш новый роут
+              fetch('http://localhost:3000/api/logs')
+              .then((res) => res.json())
+              .then((response) => {
+                if (response.success) {
+                  console.log("📥 Данные из базы получены:", response.data);
+
+                  // Сервер отдает время в формате ISO (createdAt)
+                  // А нашему фронтенду нужен красивый timestamp ("14:30"). Переводим:
+                  const serverLogs = response.data.map((log: any) => ({
+                    id: log.id,
+                    amount: log.amount,
+                    name: log.name,
+                    icon: log.icon,
+                    timestamp: new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  }));
+
+                  // Обновляем состояние React: заменяем пустые логи на те, что пришли из базы!
+                  setAppData(prev => ({ ...prev, todayLogs: serverLogs }));
+                }
+              })
+              .catch((error) => {
+                console.error("❌ Ошибка загрузки логов из базы:", error);
+              });
+  }, []);
 
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
   const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
@@ -112,37 +126,66 @@ export default function App() {
     localStorage.setItem('waterDash_data', JSON.stringify(appData));
   }, [appData]);
 
-  // Теперь кнопка добавляем не просто цифру а подробную запись ( лог )
-  const handleAddDrink = (amount: number, name: string, icon: string) => {
-     // Магия UX: после добавления напитска сразу перекидываем юзера на главный экран
+ // НАСТОЯЩЕЕ СОХРАНЕНИЕ НА СЕРВЕР
+  const handleAddDrink = async (amount: number, name: string, icon: string) => {
     setActiveTab('home');
 
-    // Задержка в 100мс
-    setTimeout(() => {
-    const newLog: WaterLog = {
-    id: Date.now().toString(), // Генерируем уникальный ID
-    amount: amount,
-    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Время типа "14:30"
-    name: name,
-    icon: icon
+    try {
+            // Отправляем данные на сервер ( наш POST-запрос )
+            const response = await fetch('http://localhost:3000/api/logs', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount, name, icon })
+            });
+
+            const result = await response.json();
+
+            // Если сервер ответил "Успешно сохранено"
+            if (result.success) {
+              const newLogFromServer = result.data;
+
+              // Адаптируем данные сервера для нашего интерфейса
+              const newFrontendLog: WaterLog = {
+                id: newLogFromServer.id, // Берем настоящий длинный ID из базы!
+                amount: newLogFromServer.amount,
+                name: newLogFromServer.name,
+                icon: newLogFromServer.icon,
+                timestamp: new Date(newLogFromServer.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              };
+
+              // Добавляем новый стакан в НАЧАЛО списка на экране
+              setAppData(prev => ({
+                ...prev,
+                todayLogs: [newFrontendLog, ...prev.todayLogs]
+              }));
+            }
+    } catch (error) {
+      console.error("❌ Ошибка при сохранении напитка на сервер:", error);
+    }
   };
 
-  // Обновляем стейт: берем старые данные и дописываем новый лог
-  setAppData(prev => ({
-    ...prev,
-    todayLogs: [...prev.todayLogs, newLog]
-  }));
-}, 100);
-};
+  // НАСТОЯЩЕЕ УДАЛЕНИЕ С СЕРВЕРА
+  const handleDeleteLog = async (idToRemove: string) => {
+    try {
+            // Отправляем приказ на сервер (Метод DELETE)
+            // ID вклеивается прямо в конец ссылки!
+            const response = await fetch(`http://localhost:3000/api/logs/${idToRemove}`, {
+              method: 'DELETE',
+            });
 
-// Функция удаления лога по его уникальному ID
-const handleDeleteLog = (idToRemove: string) => {
-  setAppData(prev => ({
-    ...prev,
-    // filter оставляет только те логи, ID которых НЕ совпадает с тем что мы удаляем
-    todayLogs: prev.todayLogs.filter(log => log.id !== idToRemove)
-  }));
-};
+            const result = await response.json();
+
+            // Если сервер сказал "успешно" - стираем стакан с экрана
+            if (result.success) {
+              setAppData(prev => ({
+                ...prev,
+                todayLogs: prev.todayLogs.filter(log => log.id !== idToRemove)
+              }));
+            }
+    } catch (error) {
+          console.error("❌ Ошибка при удалении напитка:", error);
+    }
+  };
 
 // Если первый запуск - показываем приветствие и ничо не рисуем
 if (appData.isFirstLaunch) {
