@@ -1,13 +1,21 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
+// Это настройки того, как Prisma будет генерировать нам автокомплит
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
+// Это указание, куда стучаться ( в наш PostgreSQL в докере)
 datasource db {
   provider = "postgresql"
+  url         = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------
+// НАШ ПЕРВЫЙ ЧЕРТЕЖ БАЗЫ ДАННЫХ: Таблица выпитых напитков
+// ----------------------------------------------------
+model WaterLog {
+  id                String       @id @default(uuid()) // Уникальный ID (uuid генерирует сложные строки типа "123e4567-e89b-...")
+  amount        Int            // Количество миллилитров (Int = целое число)
+  name           String       // Название напитка
+  icon             String       // Иконка
+  createdAt DateTime @default(now()) // Сервер сам запишет точное время когда стакан был добавлен
 }
