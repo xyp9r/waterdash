@@ -14,8 +14,34 @@ export default function Login() {
 	const handleLogin = async (e: React.FromEvent) => {
 		e.preventDefault(); // Останавливаем стандартную перезагрузку страницы браузером
 
-		console.log("Пытаемя вводы с данными:", email, password);
-		// Чуть позже мы добавим сюда наш fetch-запрос к серверу!
+		try {
+				// Стучимся на наш сервер (как делали в консоли)
+				const response = await fetch('http://localhost:3000/api/auth/login', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email, password })
+				});
+
+				const result = await response.json();
+
+				// Если сервер сказал "Успешно"
+				if (result.success) {
+					console.log("✅ Успешный вход! Токен получен.");
+
+					// Прячем токен в надежный сейф браузера (localStorage)
+					localStorage.setItem('wateDashToken', result.token);
+
+					// Магия Роутера: мгновенно телепортируем юзера в Дашборд!
+					navigate('/dashboard');
+				} else {
+					// Если пароль неверный или юзера нет - выдаём ошибку сервера
+					alert("❌ Ошибка: " + result.error);
+				}
+
+		} catch (error) {
+			console.error("Ошибка при входе:", error);
+			alert("Не удалось подключиться к серверу. Бэкенд запущен?");
+		}
 	};
 
 	return (
