@@ -9,13 +9,28 @@ datasource db {
   url         = env("DATABASE_URL")
 }
 
-// ----------------------------------------------------
-// НАШ ПЕРВЫЙ ЧЕРТЕЖ БАЗЫ ДАННЫХ: Таблица выпитых напитков
-// ----------------------------------------------------
+// Таблица юзеров
+
+model User {
+  id               String          @id @default(uuid())
+  email          String          @unique // Почта должна быть уникальной, нельзя создать 2 акка на одну почту
+  password    String          // Тут будет храниться зашифрованый пароль (хеш)
+  name          String?        // Имя пользователя (необязательно)
+  logs            WaterLog[]  // Связь: у одного юзера может быть много записей о воде
+  createdAt    DateTime     @default(now())
+}
+
+// Таблица выпитых напитков
+
 model WaterLog {
   id                String       @id @default(uuid()) // Уникальный ID (uuid генерирует сложные строки типа "123e4567-e89b-...")
   amount        Int            // Количество миллилитров (Int = целое число)
   name           String       // Название напитка
   icon             String       // Иконка
   createdAt DateTime @default(now()) // Сервер сам запишет точное время когда стакан был добавлен
+
+  // Добавляем связь с юзером
+
+  userId           String        // ID владельца стакана
+  user             User          @relation(fields: [userId], references: [id])
 }
