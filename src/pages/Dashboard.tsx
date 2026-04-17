@@ -4,7 +4,7 @@ import HomeTab from '../components/HomeTab';
 import HistoryTab from '../components/HistoryTab';
 import DrinksTab from '../components/DrinksTab';
 import SettingsTab from '../components/SettingsTab';
-import Onboarding from '../components/Onboarding';
+import Onboarding from '../pages/Onboarding';
 
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
 
