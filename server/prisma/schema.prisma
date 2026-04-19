@@ -15,6 +15,7 @@ model User {
   id               String          @id @default(uuid())
   email          String          @unique // Почта должна быть уникальной, нельзя создать 2 акка на одну почту
   password    String          // Тут будет храниться зашифрованый пароль (хеш)
+  dailyGoal     Int              @default(2000) // Цель воды, по стандарту 2л
   name          String?        // Имя пользователя (необязательно)
   logs            WaterLog[]  // Связь: у одного юзера может быть много записей о воде
   createdAt    DateTime     @default(now())
