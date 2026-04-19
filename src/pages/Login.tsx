@@ -29,7 +29,7 @@ export default function Login() {
 					console.log("✅ Успешный вход! Токен получен.");
 
 					// Прячем токен в надежный сейф браузера (localStorage)
-					localStorage.setItem('wateDashToken', result.token);
+					localStorage.setItem('waterDashToken', result.token);
 
 					// Магия Роутера: мгновенно телепортируем юзера в Дашборд!
 					navigate('/dashboard');
