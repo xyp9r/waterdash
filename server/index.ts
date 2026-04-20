@@ -58,25 +58,23 @@ app.post('/api/logs', authenticateToken, async (req: Request, res: Response) => 
 // ЧИТАЕМ ИЗ БАЗЫ: Отдаем все выпитые стаканы
 // ==========================================
 
-app.get('/api/logs', async (req: Request, res: Response) => {
+app.get('/api/logs', authenticateToken, async (req: Request, res: Response): Promise<any> => {
 	try {
-			// Говорим Присме: "Достань ВООБЩЕ ВСЕ записи из таблицы waterLog"
-			// orderBy: { createdAt: 'desc' } означает "сортируй по времени, сначало новые"
-			const allLogs = await prisma.waterLog.findMany({
-					orderBy: {
-									createdAt: 'desc'
-					}
+			const userId = (req as any).use.userId; // Достаем ID из бейджика
+
+			const userLogs = await prisma.waterLog.findMany({
+					where: { userId: userId }, // Ищем только свои стаканы
+					orderBy: { createdAt: 'desc' }
 			});
 
-			console.log(`📡 Отправили фронтенду ${allLogs.length} записей!`);
-
-			// Отдаем массив с данными обратно в браузер
-			res.json({ success: true, data: allLogs });
+			console.log(`📡 Отправили юзеру ${userLogs.length} его личных записей!`);
+			res.json({ success: true, data: userLogs });
 
 	} catch (error) {
-		console.error("❌ Ошибка при чтении из базы:", error);
-		res.status(500).json({ success: false, error: "Не удалось получить данные" });
+			console.error("❌ Ошибка причтении из базы:", error);
+			res.status(500).json({ success: false, error: "Не удалось получить данные" });
 	}
+
 });
 
 // ==========================================
@@ -84,25 +82,52 @@ app.get('/api/logs', async (req: Request, res: Response) => {
 // ==========================================
 // Обрати внимание на ":id" в ссылке. Это переменная!
 
-app.delete('/api/logs/:id', async (req: Request, res: Response) => {
+app.delete('/api/logs/:id', authenticateToken, async (req: Request, res: Response): Promise<any> => {
 	try {
-			// Достаем ID прямо из ссылки браузера
 			const logId = req.params.id as string;
+			const userId = (req as any).user.userId; // Кто пытается удалить?
 
-			// Говорим Присме: "Найди запись с этим ID и уничтожь её"
-			await prisma.waterLog.delete({
-				where: {
-					id: logId
-				}
-			});
+			// Сначала проверяем, существует ли стакан и принадлежит ли он этому пользователю
+			const log = await prisma.waterLog.findUnique({ where: { id: logId, } });
 
-			console.log(`🗑️ Успешно удалили запись с ID: ${logId}`);
+			if (!log) return res.status(404).json({ success: false, error: "Стакан не найден" });
+			if (log.userId !== userId) return res.status(403).json({ success: false, error: "Ахтунг! Попытка удалить чужой стакан!" });
+
+			// Если все ок - удаляем
+			await prisma.waterLog.delete({ where: { id: logId } });
+
+			console.log(`🗑️ Юзер удалил свой стакан с ID: ${logId}`);
 			res.json({ success: true, message: "Запись стерта из истории!" });
 
 	} catch (error) {
-			console.error("❌ Ошибка при удалении из базы:", error);
+			console.error("❌ Ошибка при удалении:", error);
 			res.status(500).json({ success: false, error: "Не удалось удалить данные" });
 	}
+
+});
+
+// ==========================================
+// ПРОФИЛЬ ЮЗЕРА: Отдаем норму воды при загрузке Дашборда
+// ==========================================
+
+app.get('/api/users/me', authenticateToken, async (req: Request, res: Response): Promise<any> => {
+	try {
+			const userId = (req as any).user.userId;
+
+			const user = await prisma.user.findUnique({
+						where: { id: userId },
+						select: { email: true, name: true, dailyGoal: true } // select: true позволяем НЕ отдавать хеш пароля хакерам!
+			});
+
+			if (!user) return res.status(404).json({ success: false, error: "Юзер не найден" });
+
+			res.json({ success: true, user: user });
+
+	} catch (error) {
+			console.error("❌ Ошибка при загрузке профиля:", error);
+			res.status(500).json({ success: false, error: "Ошибка сервера" });
+	}
+
 });
 
 // ==========================================
