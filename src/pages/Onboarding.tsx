@@ -9,19 +9,20 @@ export default function Onboarding() {
 	const navigate = useNavigate();
 
 	const handleCalculate = async () => {
+
 		let weightNum = parseFloat(weight);
 		let heightNum = parseFloat(height);
 
 		// Защита от дурака
 		if (isNaN(weightNum) || weightNum <= 0) return;
-		if (isNaN(heightNum) || heightNum <= 0) heightNum = 170; // Дефолт если ввели фигню
+		if (isNaN(heightNum) || heightNum <= 0) heightNum = 170; // Дефолтный рост если ввели фигню
 
 		if (weightNum > 300) weightNum = 300;
 
-		// Базовая формула: 30мл на 1 кг веса
+		// Базовая формула: 30мл на 1кг веса
 		let goal = weightNum * 30;
 
-		// Если человек высокий (выше 180) накидываем ещё немного воды
+		// Если человек выше 180, накидываем ещё воды
 		if (heightNum > 180) {
 			goal += 300;
 		}
@@ -36,10 +37,39 @@ export default function Onboarding() {
 
 		console.log("Рассчитаная цель:", goal);
 
-		// TODO: Здесь мы будем делать fetch на сервер, чтобы сохранить эту цель!
-		// А пока просто временно прыгаем в Дашборд
-		alert(`Твоя цель: ${goal} мл. Сохраняем и летим в Дашборд!`);
-		navigate('/dashboard');
+		try {
+				// Достаем бейджик из сейфа браузера
+				const token = localStorage.getItem('waterDashToken');
+
+				if (!token) {
+					alert("Ошибка: Вы не авторизованы! Пожалуйста войдите в систему заново.");
+					navigate('/login');
+					return;
+				}
+
+				// Отправляем цель на наш новый серверный роут
+				const response = await fetch('http://localhost:3000/api/users/goal', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`, // Показываем бейджик охраннику
+					},
+					body: JSON.stringify({ goal: goal }) // Отправляем саму цифру
+				});
+
+				const result = await response.json();
+
+				if (result.success) {
+					console.log("✅ Сервер успешно сохранил цель:", result.user);
+					navigate('/dashboard'); // Летим в дашборд!
+				} else {
+					alert("❌ Ошибка сервера: " + result.error);
+				}
+
+		} catch (error) {
+			console.error("Ошибка при сохранении цели:", error);
+			alert("Не удалось подключиться к серверу.");
+		}
 	};
 
 	return (
