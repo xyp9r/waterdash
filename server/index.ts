@@ -60,7 +60,7 @@ app.post('/api/logs', authenticateToken, async (req: Request, res: Response) => 
 
 app.get('/api/logs', authenticateToken, async (req: Request, res: Response): Promise<any> => {
 	try {
-			const userId = (req as any).use.userId; // Достаем ID из бейджика
+			const userId = (req as any).user.userId; // Достаем ID из бейджика
 
 			const userLogs = await prisma.waterLog.findMany({
 					where: { userId: userId }, // Ищем только свои стаканы
