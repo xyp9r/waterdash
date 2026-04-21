@@ -161,12 +161,20 @@ app.post('/api/auth/register', async (req: Request, res: Response): Promise<any>
 						}
 				});
 
+				// Автологин - печатаем бейджик прямо тут!
+				const token = jwt.sign(
+										{ userId: newUser.id },
+										process.env.JWT_SECRET as string,
+										{ expiresIn: '7d' }
+					);
+
 				console.log(`👤 Зарегестрирован новый юзер: ${newUser.email}`);
 
-				// Отвечаем фронтенду успехом. ВАЖНО: Пароль обратно не отдаем!
+				// Отвечаем фронтенду успехом. ВАЖНО: Пароль обратно не отдаем! И отдаем токен
 				res.json({
 								success: true,
-								data: { id: newUser.id, email: newUser.email, name: newUser.name }
+								data: { id: newUser.id, email: newUser.email, name: newUser.name },
+								token: token
 				});
 
 		} catch (error) {
