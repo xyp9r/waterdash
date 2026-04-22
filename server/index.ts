@@ -184,40 +184,44 @@ app.post('/api/auth/register', async (req: Request, res: Response): Promise<any>
 });
 
 // ==========================================
-// ОБНОВЛЕНИЕ ЦЕЛИ ВОДЫ (Только для авторизованных)
+// ОБНОВЛЕНИЕ ЦЕЛИ ВОДЫ И ПРОФИЛЯ ЮЗЕРА
 // ==========================================
 
 app.post('/api/users/goal', authenticateToken, async (req: Request, res: Response): Promise<any> => {
-		try {
-				// Достаем новую цель из посылки от фронтенда
-				const { goal } = req.body;
+	try {
+			// Достаем из посылки всё что прислал onboarding
+		const { goal, gender, weight, height, activity, weather } = req.body;
+		const userId = (req as any).user.userId;
 
-				// Охранник уже проверил бейджик и положил ID юзера в req.user
-				const userId = (req as any).user.userId;
-
-				if (!goal) {
-						return res.status(400).json({ success: false, error: "Не передана цель воды" });
-				}
-
-				// Просим присму найти юзера по его ID и переписать колонку dailyGoal
-				const updatedUser = await prisma.user.update({
-							where: { id: userId },
-							data: { dailyGoal: goal }
-				});
-
-				console.log(`🎯 Юзер ${updatedUser.email} обновил цель на: ${goal} мл`);
-
-				// Отвечаем фронтенду, что всё супер
-				res.json({
-								success: true,
-								message: "Цель успешно обновлена!",
-								user: { email: updatedUser.email, dailyGoal: updatedUser.dailyGoal }
-				});
-
-		} catch (error) {
-						console.error("❌ Ошибка при обновлении цели:", error);
-						res.status(500).json({ success: false, error: "Ошибка сервера при сохранении цели" });
+		if (!goal) {
+			return res.status(400).json({ success: false, error: "Не передана цель воды" });
 		}
+
+		// Обновляем не только дневной гол но и все новые колонки!
+		const updatedUser = await prisma.user.update({
+			where: { id: userId },
+			data: {
+						dailyGoal: goal,
+						gender: gender,
+						weight: Number(weight),
+                		height: Number(height),
+						activity: activity,
+						weather: weather
+			}
+		});
+
+		console.log(`🎯 Юзер ${updatedUser.email} сохранил профиль и обновил цель: ${goal} мл`);
+
+		res.json({
+				success: true,
+				message: "Профиль и цель успешно обновлены!",
+				user: updatedUser
+		});
+
+	} catch (error) {
+			console.error("❌ Ошибка при обновлении профиля:", error);
+			res.status(500).json({ success: false, error: "Ошибка сервера при сохранении" });
+	}
 });
 
 // ==========================================

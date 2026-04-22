@@ -20,6 +20,7 @@ model User {
   // Новые поля для профиля
   gender        String?       // 'male' / 'female'
   weight         Int?           // Вес в кг
+  height          Int?
   activity        String?       // 'low', 'medium', 'high'
   weather       String?       // 'cold', 'temperate', 'hot'
 
