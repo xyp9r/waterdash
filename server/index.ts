@@ -116,7 +116,16 @@ app.get('/api/users/me', authenticateToken, async (req: Request, res: Response):
 
 			const user = await prisma.user.findUnique({
 						where: { id: userId },
-						select: { email: true, name: true, dailyGoal: true } // select: true позволяем НЕ отдавать хеш пароля хакерам!
+						select: { 
+						email: true, 
+						name: true, 
+						dailyGoal: true,
+						gender: true,
+						weight: true,
+						height: true,
+						activity: true,
+						weather: true
+						} // select: true позволяем НЕ отдавать хеш пароля хакерам!
 			});
 
 			if (!user) return res.status(404).json({ success: false, error: "Юзер не найден" });
@@ -184,43 +193,47 @@ app.post('/api/auth/register', async (req: Request, res: Response): Promise<any>
 });
 
 // ==========================================
-// ОБНОВЛЕНИЕ ЦЕЛИ ВОДЫ И ПРОФИЛЯ ЮЗЕРА
+// ОБНОВЛЕНИЕ ПРОФИЛЯ (Умное частичное обновление)
 // ==========================================
 
 app.post('/api/users/goal', authenticateToken, async (req: Request, res: Response): Promise<any> => {
 	try {
-			// Достаем из посылки всё что прислал onboarding
-		const { goal, gender, weight, height, activity, weather } = req.body;
-		const userId = (req as any).user.userId;
+			const { goal, gender, weight, height, activity, weather } = req.body;
+			const userId = (req as any).user.userId;
 
-		if (!goal) {
-			return res.status(400).json({ success: false, error: "Не передана цель воды" });
-		}
+			// Создаем пустую коробку
+			const updateData: any = {};
 
-		// Обновляем не только дневной гол но и все новые колонки!
-		const updatedUser = await prisma.user.update({
-			where: { id: userId },
-			data: {
-						dailyGoal: goal,
-						gender: gender,
-						weight: Number(weight),
-                		height: Number(height),
-						activity: activity,
-						weather: weather
+			// Кладем в коробку только то что реально пришло от юзера
+			if (goal) updateData.dailyGoal = goal;
+			if (gender) updateData.gender = gender;
+			if (weight) updateData.weight = Number(weight);
+			if (height) updateData.height = Number(height);
+			if (activity) updateData.activity = activity;
+			if (weather) updateData.weather = weather;
+
+			// Если коробка пустая (не прислали ниче) - ругаемся
+			if (Object.keys(updateData).length === 0) {
+				return res.status(400).json({ success: false, error: "Нет данных для обновления" });
 			}
-		});
 
-		console.log(`🎯 Юзер ${updatedUser.email} сохранил профиль и обновил цель: ${goal} мл`);
+			// Отдаем коробку присме, она обновит только эти поля
+			const updatedUser = await prisma.user.update({
+				where: { id: userId },
+				data: updateData
+			});
 
-		res.json({
+			console.log(`🎯 Юзер ${updatedUser.email} точечно обновил профиль. Новые данные:`, updateData);
+
+			res.json({
 				success: true,
-				message: "Профиль и цель успешно обновлены!",
+				message: "Данные успешно обновлены!",
 				user: updatedUser
-		});
+			});
 
 	} catch (error) {
-			console.error("❌ Ошибка при обновлении профиля:", error);
-			res.status(500).json({ success: false, error: "Ошибка сервера при сохранении" });
+		console.error("❌ Ошибка при обновлении профиля:", error);
+		res.status(500).json({ success: false, error: "Ошибка сервера при сохранении" });
 	}
 });
 
