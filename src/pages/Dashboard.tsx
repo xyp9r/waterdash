@@ -21,6 +21,17 @@ interface AppState {
   goalWater: number;
   isFirstLaunch: boolean;
   historyData: Record<string, WaterLog[]>;
+
+  // Добавляем новую память для профиля
+  profile: {
+    name: string,
+    email: string,
+    gender: string | null;
+    weight: number | null;
+    height: number | null;
+    activity: string | null;
+    weather: string | null;
+  } | null;
 }
 
 // ПЕРЕИМЕНОВАЛИ В Dashboard
@@ -55,7 +66,8 @@ export default function Dashboard() {
           todayLogs: [],
           goalWater: parsed.goalWater || 2000,
           isFirstLaunch: parsed.isFirstLaunch ?? false,
-          historyData: oldHistory
+          historyData: oldHistory,
+          profile: parsed.profile || null
         };
       }
 
@@ -64,12 +76,20 @@ export default function Dashboard() {
         ...parsed,
         goalWater: parsed.goalWater || 2000,
         isFirstLaunch: parsed.isFirstLaunch ?? false,
-        historyData: parsed.historyData || {}
+        historyData: parsed.historyData || {},
+        profile: parsed.profile || null
       };
   }
 
   // Если пользователь зашел в приложение в первый раз
-  return { currentDate: today, todayLogs: [], goalWater: 2000, isFirstLaunch: true, historyData: {} };
+  return { 
+    currentDate: today, 
+    todayLogs: [], 
+    goalWater: 2000,
+    isFirstLaunch: true, 
+    historyData: {}, 
+    profile: null
+  };
 });
 
   // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
@@ -96,7 +116,11 @@ export default function Dashboard() {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-            setAppData(prev => ({ ...prev, goalWater: data.user.dailyGoal }));
+            setAppData(prev => ({ 
+              ...prev,
+               goalWater: data.user.dailyGoal,
+               profile: data.user // Сохраняем ВЕСЬ профиль целяком
+             }));
       }
     });
 
@@ -217,6 +241,7 @@ export default function Dashboard() {
           {activeTab === 'settings' && (
               <SettingsTab 
                 currentGoal={goalWater}
+                profile={appData.profile} // Передаем профиль в настройки!
                 onUpdateGoal={handleUpdateGoal}
                 />
             )}
