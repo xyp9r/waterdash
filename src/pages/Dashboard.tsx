@@ -270,7 +270,7 @@ export default function Dashboard() {
               <SettingsTab 
                 currentGoal={goalWater}
                 profile={appData.profile} // Передаем профиль в настройки!
-                onUpdateGoal={handleUpdateProfile}
+                onUpdateProfile={handleUpdateProfile}
                 />
             )}
         </main>
