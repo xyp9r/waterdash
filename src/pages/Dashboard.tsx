@@ -98,36 +98,52 @@ export default function Dashboard() {
   const goalWater = appData.goalWater;
 
   // Универсальная функция обновления профиля
-  const handleUpdateProfile = async (newData: Partial<AppState['profile'] & { goal?: number }>) => {
+  const handleUpdateProfile = async (newData: any) => {
     const token = localStorage.getItem('waterDashToken');
     if (!token) return;
 
     try {
-            // Отправляем на сервер только то что изменилось
-            const response = await fetch('http://localhost:3000/api/users/goal', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify(newData)
-            });
+      // 1. Берем текущие данные профиля и смешиваем с новыми
+      const updatedProfile = { ...appData.profile, ...newData };
+      
+      // 2. Если изменились параметры, влияющие на воду — пересчитываем цель
+      let finalData = { ...newData };
+      
+     // Добавили newData.height в проверку
+      if (newData.weight || newData.gender || newData.height || newData.activity || newData.weather) {
+        const newGoal = calculateHydrationGoal(
+          Number(updatedProfile.weight) || 70,
+          updatedProfile.gender || 'male',
+          Number(updatedProfile.height) || 175, // <-- ПЕРЕДАЕМ РОСТ СЮДА
+          updatedProfile.activity || 'low',
+          updatedProfile.weather || 'temperate'
+        );
+        
+        finalData.goal = newGoal; 
+        console.log(`🧪 Пересчитали цель! Новая норма: ${newGoal} мл`);
+      }
 
-            const result = await response.json();
+      // 3. Отправляем обновленные данные (включая новую цель) на сервер
+      const response = await fetch('http://localhost:3000/api/users/goal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(finalData)
+      });
 
-            if (result.success) {
-              // Если все ок - обновляем состояние Дашборда
-              setAppData(prev => ({
-                ...prev,
-                goalWater: result.user.dailyGoal,
-                profile: result.user
-              }));
+      const result = await response.json();
 
-              console.log("✅ Профиль синхронизирован с сервером");
-            }
-
+      if (result.success) {
+        setAppData(prev => ({
+          ...prev,
+          goalWater: result.user.dailyGoal,
+          profile: result.user
+        }));
+      }
     } catch (error) {
-        console.error("❌ Ошибка при обновлении профиля:", error);
+      console.error("❌ Ошибка обновления:", error);
     }
   };
 
@@ -171,6 +187,23 @@ export default function Dashboard() {
     })
     .catch((error) => console.error("❌ Ошибка загрузки логов:", error));
   }, []);
+
+ // УНИВЕРСАЛЬНЫЙ КАЛЬКУЛЯТОР НОРМЫ ВОДЫ
+  const calculateHydrationGoal = (weight: number, gender: string, height: number, activity: string, weather: string) => {
+    let base = gender === 'male' ? weight * 35 : weight * 31;
+
+    // 📈 ДОБАВИЛИ БОНУС ЗА РОСТ (как в онбординге)
+    if (height > 180) base += 300;
+
+    if (activity === 'low') base += 300;
+    if (activity === 'medium') base += 600;
+    if (activity === 'high') base += 1000;
+
+    if (weather === 'warm') base += 300;
+    if (weather === 'hot') base += 600;
+
+    return Math.round(base / 50) * 50;
+  };
 
   // НАСТОЯЩЕЕ СОХРАНЕНИЕ НА СЕРВЕР (С ТОКЕНОМ)
   const handleAddDrink = async (amount: number, name: string, icon: string) => {

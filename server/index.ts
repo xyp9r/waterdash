@@ -205,7 +205,7 @@ app.post('/api/users/goal', authenticateToken, async (req: Request, res: Respons
 			const updateData: any = {};
 
 			// Кладем в коробку только то что реально пришло от юзера
-			if (goal) updateData.dailyGoal = goal;
+			if (goal) updateData.dailyGoal = Number(goal);
 			if (gender) updateData.gender = gender;
 			if (weight) updateData.weight = Number(weight);
 			if (height) updateData.height = Number(height);
