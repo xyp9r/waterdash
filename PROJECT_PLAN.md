@@ -5,8 +5,8 @@ A modern, mobile-first web application for tracking daily hydration with custom 
 
 ## 🛠 Tech Stack (The "Fullstack Killer" Stack)
 - **Frontend:** React 18, TypeScript, Tailwind CSS, Vite.
-- **Backend (Phase 2):** Node.js, Express, TypeScript.
-- **Database (Phase 2):** PostgreSQL + Prisma ORM.
+- **Backend:** Node.js, Express, TypeScript.
+- **Database:** PostgreSQL + Prisma ORM.
 - **Infrastructure:** Docker.
 - **Hosting/Deployment:** GitHub Actions, Vercel/Render.
 
@@ -27,16 +27,23 @@ A modern, mobile-first web application for tracking daily hydration with custom 
 * [x] Build Data Types (TypeScript interfaces for `Drink`, `Log`).
 * [x] Logic: Save and retrieve data from browser `LocalStorage`.
 
-### 🟡 Phase 2: The Backend Engine (IN PROGRESS)
+### 🟡 Phase 2: The Backend Engine - ✅ COMPLETED
 * [x] Initialize Node.js + Express + TS environment.
 * [x] Setup Docker and PostgreSQL database.
 * [x] Setup Prisma ORM and create database schemas (Users, DrinkLogs).
 * [x] Build CRUD API endpoints (Create, Read, Update, Delete logs).
 
-### 🔴 Phase 3: Auth & Social (The Big League)
-* [ ] User Registration & Login (JWT Auth).
-* [ ] Connect Frontend to Backend (replace LocalStorage with real API calls).
+### 🔴 Phase 3: Auth & Data Isolation - ✅ COMPLETED
+* [x] User Registration & Login (JWT Auth & Auto-login).
+* [x] Connect Frontend to Backend (replace LocalStorage with real API calls).
+* [x] Isolate user data (users only see their own water logs).
 * [ ] Leaderboards or Friends system (optional).
+
+### 🟠 Phase 3.5: Premium Profile & Settings (IN PROGRESS)
+* [x] Extend Database Schema with Prisma (weight, height, gender, weather, activity).
+* [x] Smart Backend logic for partial profile updates.
+* [x] Update Onboarding calculator to save full profile to DB.
+* [ ] Build interactive Settings Tab with slide-up modals for updating profile parameters.
 
 ### 🟣 Phase 4: Desktop Dashboard & Responsive Mastery
 * [ ] Fully responsive layout (mobile-first → desktop).
