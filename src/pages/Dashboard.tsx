@@ -97,10 +97,38 @@ export default function Dashboard() {
   // Теперь цель береться из памяти а не из хардкора!
   const goalWater = appData.goalWater;
 
-  // Функция для обновления цели
-  const handleUpdateGoal = (newGoal: number) => {
-    setAppData(prev => ({ ...prev, goalWater: newGoal}));
-    setActiveTab('home'); // сразу перекидываем на главную чтобы увидеть результат
+  // Универсальная функция обновления профиля
+  const handleUpdateProfile = async (newData: Partial<AppState['profile'] & { goal?: number }>) => {
+    const token = localStorage.getItem('waterDashToken');
+    if (!token) return;
+
+    try {
+            // Отправляем на сервер только то что изменилось
+            const response = await fetch('http://localhost:3000/api/users/goal', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(newData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Если все ок - обновляем состояние Дашборда
+              setAppData(prev => ({
+                ...prev,
+                goalWater: result.user.dailyGoal,
+                profile: result.user
+              }));
+
+              console.log("✅ Профиль синхронизирован с сервером");
+            }
+
+    } catch (error) {
+        console.error("❌ Ошибка при обновлении профиля:", error);
+    }
   };
 
 // Загружаем ВСË из базы при старте
@@ -242,7 +270,7 @@ export default function Dashboard() {
               <SettingsTab 
                 currentGoal={goalWater}
                 profile={appData.profile} // Передаем профиль в настройки!
-                onUpdateGoal={handleUpdateGoal}
+                onUpdateGoal={handleUpdateProfile}
                 />
             )}
         </main>
