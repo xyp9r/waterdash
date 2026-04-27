@@ -20,8 +20,10 @@
 * [x] Interactive Settings Tab with slide-up modals.
 
 ### 🔵 Phase 3.8: Core Logic & Analytics (IN PROGRESS)
-* [ ] Implement Logout functionality.
-* [ ] Quick Add custom modal on the Home screen.
+* [x] Implement Logout functionality.
+* [x] Quick Add drink buttons on the Home screen.
+* [ ] Quick Add custom amount modal (the "+" button on Home).
+* [ ] Custom Drink Builder (allow users to create and save their own drink types in the Drinks Tab).
 * [ ] Advanced Statistics (Weekly/Monthly/Yearly) with interactive charts (Recharts).
 
 ### 🟣 Phase 4: Desktop Dashboard & Responsive Mastery
