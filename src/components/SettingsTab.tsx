@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface SettingsTabProps {
 	currentGoal: number;
@@ -10,6 +11,17 @@ type ModalType = 'goal' | 'gender' | 'weight' | 'height' | 'activity' | 'weather
 
 export default function SettingsTab({ currentGoal, profile, onUpdateProfile }: SettingsTabProps) {
 	const [activeModal, setActiveModal] = useState<ModalType>(null);
+
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+
+		// Удаляем токен из памяти
+		localStorage.removeItem('waterDashToken');
+
+		// Выкидываем на страницу логина
+		navigate('/login');
+	};
 
 	// Временное состояние для ввода в шторке
 	const [tempValue, setTempValue] = useState<string | number>('');
@@ -66,6 +78,14 @@ export default function SettingsTab({ currentGoal, profile, onUpdateProfile }: S
 			<SettingItem label="Height" value={profile.height ? `${profile.height} cm` : 'Set'} onClick={() => setActiveModal('height')} />
 			<SettingItem label="Daily Goal" value={`${currentGoal} ml`} onClick={() => setActiveModal('goal')} highlight />
 		</div>
+
+		{/* КНОПКА ВЫХОДА */}
+		<button
+			onClick={handleLogout}
+			className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-4 rounded-3xl transition-colors border border-red-500/20 mt-4"
+		>
+			Log Out
+		</button>
 
 		{/* МОДАЛЬНАЯ ШТОРКА */}
 		{activeModal && (
