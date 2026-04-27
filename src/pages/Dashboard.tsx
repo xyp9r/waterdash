@@ -285,7 +285,7 @@ export default function Dashboard() {
                 currentWater={currentWater}
                 goalWater={goalWater}
                 // Передаем дефолтную воду для главной кнопки:
-                onAddWater={() => handleAddDrink(250, 'Water', '💧')}
+                onAddWater={handleAddDrink}
                 />
             )}
           {activeTab === 'history' && (
