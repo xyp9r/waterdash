@@ -69,7 +69,7 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 									) : (		
 											// Тут та же логика: есть история - жмем до 40vh. Нет истории - растягиваем на весь экран (flex-1)
 											<div className={`overflow-y-auto pr-2 no-scrollbar ${sortedHistoryDates.length > 0 ? 'max-h-[40vh]' : 'flex-1 min-h-0'}`}>
-													{[...logs].reverse().map((log) => renderLogCard(log, true))}
+													{[...logs].map((log) => renderLogCard(log, true))}
 											</div>
 							)}
 					</div>
@@ -100,7 +100,7 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 
 																	{/* Список всех напитков за этот день. canDelete = false */}
 																	<div className="flex flex-col">
-																				{[...historyData[date]].reverse().map(log => renderLogCard(log, false))}
+																				{[...historyData[date]].map(log => renderLogCard(log, false))}
 																	</div>
 																</div>
 															);
