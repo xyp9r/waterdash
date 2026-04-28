@@ -170,19 +170,52 @@ export default function Dashboard() {
 
     // Б) Скачиваем наши личные стаканы
     fetch('http://localhost:3000/api/logs', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      headers: { 'Authorization': `Bearer ${token}` }
     })
     .then((res) => res.json())
     .then((response) => {
       if (response.success) {
-        const serverLogs = response.data.map((log: any) => ({
-            id: log.id,
-            amount: log.amount,
-            name: log.name,
-            icon: log.icon,
-            timestamp: new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+        // Получаем сегодняшнюю дату в формате "YYYY-MM-DD" локального времени
+        const todayDate = new Date();
+        const todayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
+
+        const sortedTodayLogs: WaterLog[] = [];
+        const sortedHistory: Record<string, WaterLog[]> = {};
+
+        // Перебираем все стаканы которые прислал сервер
+        response.data.forEach((log: any) => {
+          const logDateObj = new Date(log.createdAt);
+          // Узнаем день когда был выпил конкретный стакан
+          const logDateStr = `${logDateObj.getFullYear()}-${String(logDateObj.getMonth() + 1).padStart(2, '0')}-${String(logDateObj.getDate()).padStart(2, '0')}`;
+
+          const formattedLog: WaterLog = {
+                id: log.id,
+                amount: log.amount,
+                name: log.name,
+                icon: log.icon,
+                timestamp: logDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+
+          // Сортируем!
+          if (logDateStr === todayStr) {
+            // Если стакан выпит сегодня - кладем в сегодняшие
+            sortedTodayLogs.push(formattedLog);
+          } else {
+            // Если в другой день - кладем в архив
+            if (!sortedHistory[logDateStr]) {
+              sortedHistory[logDateStr] = []; // Создаем пустую полку для нового дня, если её ещё нет
+            }
+            sortedHistory[logDateStr].push(formattedLog);
+          }
+        });
+
+        // Обновляем память Дашборда одним махом
+        setAppData(prev => ({
+          ...prev,
+          todayLogs: sortedTodayLogs,
+          historyData: sortedHistory
         }));
-        setAppData(prev => ({ ...prev, todayLogs: serverLogs }));
       }
     })
     .catch((error) => console.error("❌ Ошибка загрузки логов:", error));
