@@ -15,12 +15,21 @@ export interface WaterLog {
   icon: string;
 }
 
+// Новый чертеж для пресетов
+export interface FavoriteDrink {
+  id: string;
+  amount: number;
+  name: string;
+  icon: string;
+}
+
 interface AppState {
   currentDate: string;
   todayLogs: WaterLog[];
   goalWater: number;
   isFirstLaunch: boolean;
   historyData: Record<string, WaterLog[]>;
+  favoriteDrinks: FavoriteDrink[]; 
 
   // Добавляем новую память для профиля
   profile: {
@@ -67,7 +76,8 @@ export default function Dashboard() {
           goalWater: parsed.goalWater || 2000,
           isFirstLaunch: parsed.isFirstLaunch ?? false,
           historyData: oldHistory,
-          profile: parsed.profile || null
+          profile: parsed.profile || null,
+          favoriteDrinks: parsed.favoriteDrinks || []
         };
       }
 
@@ -77,7 +87,8 @@ export default function Dashboard() {
         goalWater: parsed.goalWater || 2000,
         isFirstLaunch: parsed.isFirstLaunch ?? false,
         historyData: parsed.historyData || {},
-        profile: parsed.profile || null
+        profile: parsed.profile || null,
+        favoriteDrinks: parsed.favoriteDrinks || []
       };
   }
 
@@ -88,7 +99,8 @@ export default function Dashboard() {
     goalWater: 2000,
     isFirstLaunch: true, 
     historyData: {}, 
-    profile: null
+    profile: null,
+    favoriteDrinks: []
   };
 });
 
@@ -219,6 +231,21 @@ export default function Dashboard() {
       }
     })
     .catch((error) => console.error("❌ Ошибка загрузки логов:", error));
+
+     // (B) Скачиваем избранные напитки (пресеты)
+          fetch('http://localhost:3000/api/favorites', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          .then(res => res.json())
+          .then(response => {
+            if (response.success) {
+              setAppData(prev => ({
+                ...prev,
+                favoriteDrinks: response.data
+              }));
+            }
+          })
+          .catch(error => console.error("❌ Ошибка загрузки избранного:", error));
   }, []);
 
  // УНИВЕРСАЛЬНЫЙ КАЛЬКУЛЯТОР НОРМЫ ВОДЫ
