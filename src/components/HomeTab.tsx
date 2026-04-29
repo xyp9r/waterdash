@@ -1,9 +1,14 @@
 import { useState } from 'react';
 
+// Импортируем четреж для избранных напитков
+import type { FavoriteDrink } from '../pages/Dashboard';
+
 interface HomeTabProps {
 	currentWater: number;
 	goalWater: number;
 	onAddWater: (amount: number, name: string, icon: string) => void;
+	favoriteDrinks: FavoriteDrink[];
+	onSaveFavorite: ( amount: number, name: string, icon: string ) => void;
 }
 
 // Добавил базу напитков из DrinksTab
@@ -17,7 +22,7 @@ const DRINK_TYPES = [
   { id: 'milk', name: 'Milk', icon: '🥛', color: 'text-slate-200', bg: 'bg-slate-200/20' },
 ];
 
-export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTabProps) {
+export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteDrinks, onSaveFavorite }: HomeTabProps) {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [amountStr, setAmountStr] = useState('');
@@ -48,7 +53,18 @@ export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTab
 			setAmountStr('');
 			setSelectedCustomDrink(DRINK_TYPES[0]); // Сбрасываем обратно на воду
 		}
-	};
+	};	
+
+		// Сохраняем в избранное и закрываем шторку
+		const handleSaveAsFavorite = () => {
+			const finalAmount = parseInt(amountStr, 10);
+			if (!isNaN(finalAmount) && finalAmount > 0) {
+				onSaveFavorite(finalAmount, selectedCustomDrink.name, selectedCustomDrink.icon);
+				setIsModalOpen(false);
+				setAmountStr('');
+				setSelectedCustomDrink(DRINK_TYPES[0]);
+			}
+		};
 
 	return (
 		<div className="flex flex-col items-center justify-center h-full pb-10">
@@ -68,6 +84,9 @@ export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTab
 			{/* БЛОК QUICK ADD */}
 			<div className="mt-12 w-full max-w-xs space-y-4">
 				<h3 className="text-slate-400 text-sm font-medium text-center uppercase tracking-widest mb-4">Quick Add</h3>
+
+				{/* 1. БАЗОВЫЕ КНОПКИ */}
+
 				<button
 				onClick={() => onAddWater(250, 'Water', '💧')}
 				className="w-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 flex items-center justify-between px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-blue-500/30" 
@@ -80,12 +99,34 @@ export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTab
 				>
 					<span className="flex items-center gap-3"><span className="text-2xl">☕</span> Coffee</span><span>150 ml</span>
 				</button>
-				<button
-					onClick={() => setIsModalOpen(true)}
-					className="w-full bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-slate-700/50"
-				>
-					<span>➕ Custom Amount</span>
-				</button>
+
+				{/* ИЗБРАННЫЕ НАПИТКИ */}
+
+				{favoriteDrinks.length > 0 && (
+						<div className="pt-4 border-t border-slate-800/50 space-y-3">
+							<h4 className="text-slate-500 text-xs font-medium text-center uppercase tracking-widest mb-3">Favorites</h4>
+							{favoriteDrinks.map((drink) => (
+										<button
+												key={drink.id}
+												onClick={() => onAddWater(drink.amount, drink.name, drink.icon)}
+												className="w-full bg-slate-800/50 text-slate-300 hover:bg-slate-700 flex items-center justify-between px-6 py-3 rounded-2xl font-bold text-base transition-all active:scale-95 border border-slate-700/50"
+											>
+													<span className="flex items-center gap-3"><span className="text-xl">{drink.icon}</span> {drink.name}</span>
+													<span className="text-slate-400">{drink.amount} ml</span>
+											</button>
+								))}
+						</div>
+					)}
+
+				{/* Кнопка кастомного объема */}
+				<div className="pt-2">
+					<button
+						onClick={() => setIsModalOpen(true)}
+						className="w-full bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-slate-700/50"
+					>
+						<span>➕ Custom Amount</span>
+					</button>
+				</div>
 			</div>
 
 			{/* ВЫЕЗЖАЮЩАЯ ШТОРКА */}
@@ -145,15 +186,32 @@ export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTab
                         </div>
 
                         {/* Сетка кнопок клавиатуры */}
-                        <div className="grid grid-cols-3 gap-2">
-                            {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
-                                <button key={num} onClick={() => handleNumpad(num)} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">{num}</button>
-                            ))}
-                            <button onClick={() => handleNumpad('00')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-xl h-14 rounded-2xl transition-colors">00</button>
-                            <button onClick={() => handleNumpad('0')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">0</button>
-                            <button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-800 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </button>
+                        <div className="grid grid-cols-4 gap-2">
+
+                        	{/* Левая колонка со звездочкой */}
+                        	<div className="col-span-1 flex flex-col gap-2">
+                        		{/* Новая кнопка - звездочка (сохранить в избранное) */}
+                        		<button
+                        			onClick={handleSaveAsFavorite}
+                        			disabled={!amountStr}
+                        			className="bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 disabled:opacity-30 flex-1 rounded-2xl flex flex-col items-center justify-center transition-colors border border-amber-500/20"
+                        		>
+                        				<span className="text-2xl mb-1">⭐️</span>
+                        				<span className="text-[10px] font-bold uppercase tracking-wider">Save</span>
+                        		</button>
+                        	</div>
+
+                        	{/* Основной нампад (занимает 3 колоки) */}
+                        	<div className="col-span-3 grid grid-cols-3 gap-2">
+                            	{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
+                            	    <button key={num} onClick={() => handleNumpad(num)} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">{num}</button>
+                            	))}
+                            	<button onClick={() => handleNumpad('00')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-xl h-14 rounded-2xl transition-colors">00</button>
+                            	<button onClick={() => handleNumpad('0')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">0</button>
+                            	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-800 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
+                            	    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            	</button>
+                            </div>
                         </div>
                     </div>
                 </>

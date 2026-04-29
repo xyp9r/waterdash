@@ -303,6 +303,34 @@ export default function Dashboard() {
     }
   };
 
+  // Сохраняем пресет (избранный напиток) на сервер
+  const handleSaveFavorite = async (amount: number, name: string, icon: string) => {
+    const token = localStorage.getItem('waterDashToken');
+
+    try {
+            const response = await fetch('http://localhost:3000/api/favorites', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ amount, name, icon })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Добавляем пресет в память дашборда, чтобы он сразу появился на экране
+              setAppData(prev => ({
+                ...prev,
+                favoriteDrinks: [...prev.favoriteDrinks, result.data]
+              }));
+            }
+    } catch (error) {
+                  console.error("❌ Ошибка при сохранении пресета:", error);
+    }
+  };
+
   // НАСТОЯЩЕЕ УДАЛЕНИЕ (С ТОКЕНОМ)
   const handleDeleteLog = async (idToRemove: string) => {
     const token = localStorage.getItem('waterDashToken');
@@ -346,6 +374,9 @@ export default function Dashboard() {
                 goalWater={goalWater}
                 // Передаем дефолтную воду для главной кнопки:
                 onAddWater={handleAddDrink}
+                // новые провода для избранного:
+                favoriteDrinks={appData.favoriteDrinks}
+                onSaveFavorite={handleSaveFavorite}
                 />
             )}
           {activeTab === 'history' && (
