@@ -19,13 +19,14 @@
 * [x] Smart Backend logic for partial profile updates.
 * [x] Interactive Settings Tab with slide-up modals.
 
-### 🔵 Phase 3.8: Core Logic & Analytics (IN PROGRESS)
+### 🔵 Phase 3.8: Core Logic & Analytics - ⏳ ALMOST DONE
 * [x] Implement Logout functionality.
 * [x] Quick Add drink buttons on the Home screen.
-* [ ] Quick Add custom amount modal (the "+" button on Home).
-* [ ] Custom Drink Builder (allow users to create and save their own drink types in the Drinks Tab).
-* [ ] Advanced Statistics (Weekly/Monthly/Yearly) with interactive charts (Recharts).
+* [x] Quick Add custom amount modal (the "+" button on Home).
+* [x] Custom Drink Builder (saving favorite presets with ⭐).
+* [ ] Advanced Statistics (Weekly/Monthly) with interactive charts (Recharts) in History Tab.
 
 ### 🟣 Phase 4: Desktop Dashboard & Responsive Mastery
 * [ ] Fully responsive layout (mobile-first → desktop).
 * [ ] Desktop UI: comprehensive dashboard view.
+* [ ] Deployment (Vercel + Supabase/Render) - Launching to the real web!
