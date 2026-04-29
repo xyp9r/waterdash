@@ -33,7 +33,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater }: HomeTab
 	const handleNumpad = (val: string) => {
 		if (amountStr.length >= 4) return;
 		if (val === '00' && amountStr === '') return;
-		if (val === '0' && amount === '') return;
+		if (val === '0' && amountStr === '') return;
 		setAmountStr(prev => prev + val);
 	};
 
