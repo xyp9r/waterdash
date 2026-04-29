@@ -107,6 +107,56 @@ app.delete('/api/logs/:id', authenticateToken, async (req: Request, res: Respons
 });
 
 // ==========================================
+// ИЗБРАННЫЕ НАПИТКИ: Сохраняем новый пресет
+// ==========================================
+
+app.post('/api/favorites', authenticateToken, async (req: Request, res: Response): Promise<any> => {
+	try {
+			const { amount, name, icon } = req.body;
+			const userId = (req as any).user.userId;
+
+			// Записывем в новую таблицу FavoriteDrink
+			const newFavorite = await prisma.favoriteDrink.create({
+					data: {
+								amount: amount,
+								name: name,
+								icon: icon,
+								userId: userId
+					}
+			});
+
+			console.log(`⭐️ Юзер создал новый пресет: ${newFavorite.name} ${newFavorite.amount}ml`);
+			res.json({ success: true, data: newFavorite });
+
+	} catch (error) {
+					console.error("❌ Ошибка при сохранении пресета:", error);
+					res.status(500).json({ success: false, error: "Не удалось сохранить любимый напиток" });
+	}
+});
+
+// ==========================================
+// ИЗБРАННЫЕ НАПИТКИ: Получаем все пресеты юзера
+// ==========================================
+
+app.get('/api/favorites', authenticateToken, async (req: Request, res: Response): Promise<any> => {
+	try {
+			const userId = (req as any).user.userId;
+
+			// Достаем все пресеты этого конкретного юзера
+			const favorites = await prisma.favoriteDrink.findMany({
+						where: { userId: userId },
+						orderBy: { createdAt: 'asc' } // Сортируем по порядку создания
+			});
+
+			res.json({ success: true, data: favorites });
+
+	} catch (error) {
+					console.error("❌ Ошибка при загрузке пресетов:", error);
+					res.status(500).json({ success: false, error: "Не удалось загрузить пресеты" });
+	}
+});
+
+// ==========================================
 // ПРОФИЛЬ ЮЗЕРА: Отдаем норму воды при загрузке Дашборда
 // ==========================================
 
