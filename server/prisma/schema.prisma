@@ -24,9 +24,10 @@ model User {
   activity        String?       // 'low', 'medium', 'high'
   weather       String?       // 'cold', 'temperate', 'hot'
 
-  dailyGoal     Int              @default(2000) // Цель воды, по стандарту 2л
-  logs            WaterLog[]  // Связь: у одного юзера может быть много записей о воде
-  createdAt    DateTime     @default(now())
+  dailyGoal            Int              @default(2000) // Цель воды, по стандарту 2л
+  logs                   WaterLog[]  // Связь: у одного юзера может быть много записей о воде
+  favoriteDrinks     FavoriteDrink[] // Новая связь - у юзера может быть любимые напитки 
+  createdAt           DateTime     @default(now())
 }
 
 // Таблица выпитых напитков
@@ -42,4 +43,17 @@ model WaterLog {
 
   userId           String        // ID владельца стакана
   user             User          @relation(fields: [userId], references: [id])
+}
+
+// Таблица любимых напиткой (пресетов для быстрого добавления)
+model FavoriteDrink {
+  id            String      @id @default(uuid())
+  amount    Int           // Объем пресета
+  name        String      // Название (например, "Cola")
+  icon          String      // Иконка
+  createdAt           DateTime     @default(now())
+
+  // Связь с юзером (кто создал этот пресет)
+  userId      String
+  user         User       @relation(fields: [userId], references: [id])
 }
