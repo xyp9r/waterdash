@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
+// Импортируем чертеж для фаворитных напитков
+import type { FavoriteDrink } from '../pages/Dashboard';
+
 interface DrinksTabProps {
 	onAddDrink: (amount: number, name: string, icon: string) => void;
+	favoriteDrinks: FavoriteDrink[];
+	onSaveFavorite: (amount: number, name: string, icon: string) => void;
 }
 
 const DRINK_TYPES = [
@@ -13,7 +18,7 @@ const DRINK_TYPES = [
   { id: 'milk', name: 'Milk', icon: '🥛', color: 'bg-slate-200/20 text-slate-200' },
 ];
 
-export default function DrinksTab({ onAddDrink }: DrinksTabProps) {
+export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }: DrinksTabProps) {
 	const [selectedDrink, setSelectedDrink] = useState<{name: string, icon: string} | null>(null);
 	const [amountStr, setAmountStr] = useState('');
 
@@ -37,6 +42,15 @@ export default function DrinksTab({ onAddDrink }: DrinksTabProps) {
 		}
 	};
 
+	const handleSaveAsFavorite = () => {
+		const finalAmount = parseInt(amountStr, 10);
+		if (!isNaN(finalAmount) && finalAmount > 0 && selectedDrink) {
+					onSaveFavorite(finalAmount, selectedDrink.name, selectedDrink.icon);
+					setSelectedDrink(null); // Закрываем шторку после сохранения
+					setAmountStr('');
+		}
+	};
+
 	return (
 		// УБРАЛИ класс 'relative' отсюда, чтобы блюр мог растянуться на весь телефон
 		<div className="flex flex-col h-full">
@@ -52,6 +66,7 @@ export default function DrinksTab({ onAddDrink }: DrinksTabProps) {
 						}}
 						className="bg-slate-800 p-5 rounded-2xl flex items-center gap-5 shadow-sm border border-slate-700/50 hover:border-slate-500 transition-all active:scale-95"
 					>
+
 						<div className={`text-3xl p-3 rounded-full ${drink.color}`}>
 							{drink.icon}
 						</div>
@@ -125,42 +140,58 @@ export default function DrinksTab({ onAddDrink }: DrinksTabProps) {
 							</div>
 						</div>
 
-						{/* Сетка кнопок клавиатуры */}
-						<div className="grid grid-cols-3 gap-2">
-							{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
+						{/* ГЛАВНАЯ СЕТКА НА 4 КОЛОНКИ */}
+						<div className="grid grid-cols-4 gap-2">
+							
+							{/* Левая колонка со звездочкой (занимает 1 из 4) */}
+							<div className="col-span-1 flex flex-col gap-2">
 								<button
-									key={num}
-									onClick={() => handleNumpad(num)}
+									onClick={handleSaveAsFavorite}
+									disabled={!amountStr}
+									className="bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 disabled:opacity-30 flex-1 rounded-2xl flex flex-col items-center justify-center transition-colors border border-amber-500/20"
+								>
+									<span className="text-2xl mb-1">⭐️</span>
+									<span className="text-[10px] font-bold uppercase tracking-wider">Save</span>
+								</button>
+							</div>
+
+							{/* Основной нумпад (занимает 3 из 4 колонок) */}
+							<div className="col-span-3 grid grid-cols-3 gap-2">
+								{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
+									<button
+										key={num}
+										onClick={() => handleNumpad(num)}
+										className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-2xl h-14 rounded-2xl transition-colors"
+									>
+										{num}
+									</button>
+								))}
+
+								<button
+									onClick={() => handleNumpad('00')}
+									className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-xl h-14 rounded-2xl transition-colors"
+								>
+									00
+								</button>
+
+								<button
+									onClick={() => handleNumpad('0')}
 									className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-2xl h-14 rounded-2xl transition-colors"
 								>
-									{num}
+									0
 								</button>
-							))}
 
-							<button
-								onClick={() => handleNumpad('00')}
-								className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-xl h-14 rounded-2xl transition-colors"
-							>
-								00
-							</button>
-
-							<button
-								onClick={() => handleNumpad('0')}
-								className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-2xl h-14 rounded-2xl transition-colors"
-							>
-								0
-							</button>
-
-							{/* Кнопка отправить - ИСПРАВЛЕНО: Координаты SVG стрелочки восстановлены (12 19 в конце) */}
-							<button
-								onClick={handleSubmit}
-								disabled={!amountStr}
-								className="bg-white text-blue-500 disabled:bg-white/50 disabled:text-blue-500/50 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg"
-							>
-								<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-							</button>
+								{/* Кнопка отправить */}
+								<button
+									onClick={handleSubmit}
+									disabled={!amountStr}
+									className="bg-white text-blue-500 disabled:bg-white/50 disabled:text-blue-500/50 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+								</button>
+							</div>
 						</div>
-					</div>
+				</div>
 				</>
 			)}
 		</div>

@@ -388,7 +388,11 @@ export default function Dashboard() {
             )}
           {activeTab === 'drinks' && (
             // Прокидываем нашу новую функцию во вкладку напитков:
-              <DrinksTab onAddDrink={handleAddDrink}/>
+              <DrinksTab 
+                onAddDrink={handleAddDrink}
+                favoriteDrinks={appData.favoriteDrinks}
+                onSaveFavorite={handleSaveFavorite}
+                />
             )}
           {activeTab === 'settings' && (
               <SettingsTab 
