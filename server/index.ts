@@ -157,6 +157,36 @@ app.get('/api/favorites', authenticateToken, async (req: Request, res: Response)
 });
 
 // ==========================================
+// УДАЛЕНИЕ ПРЕСЕТА: (DELETE /api/favorites/:id)
+// ==========================================
+app.delete('/api/favorites/:id', authenticateToken, async (req: Request, res: Response): Promise<any> => {
+	try {
+			const id = req.params.id as string; // <-- Исправили название
+			const userId = (req as any).user.userId;
+
+			// Ищем пресет, убеждаемся что он принадлежит текущему юзеру
+			const favorite = await prisma.favoriteDrink.findFirst({ // <-- Исправили метод
+				where: {
+					id: id,
+					userId: userId
+				}
+			});
+
+			if (!favorite) {
+				return res.status(404).json({ success: false, error: "Не удалось найти пресет" }); // <-- Заодно поменял статус на 404
+			}
+
+			await prisma.favoriteDrink.delete({ where: { id: id } });
+
+			console.log(`🗑️ Юзер удалил свой пресет с ID: ${id}`);
+			res.json({ success: true, message: "Пресет стертый из истории!" });
+	} catch (error) {
+		console.error("Ошибка при удалении пресета", error);
+		res.status(500).json({ success: false, error: "Ошибка при удалении пресета" })
+	}
+});
+
+// ==========================================
 // ПРОФИЛЬ ЮЗЕРА: Отдаем норму воды при загрузке Дашборда
 // ==========================================
 

@@ -354,6 +354,30 @@ export default function Dashboard() {
           console.error("❌ Ошибка при удалении:", error)
     }
   };
+
+  // НАСТОЯЩЕЕ УДАЛЕНИЕ ПРЕСЕТА (С ТОКЕНОМ)
+  const handleDeleteFavorite = async (idToRemove: string) => {
+    const token = localStorage.getItem('waterDashToken');
+
+    try {
+            const response = await fetch(`http://localhost:3000/api/favorites/${idToRemove}`, {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Вырезаем удаленный напиток из памяти Дашборда
+              setAppData(prev => ({
+                ...prev,
+                favoriteDrinks: prev.favoriteDrinks.filter(drink => drink.id !== idToRemove)
+              }));
+            }
+    } catch (error) {
+                  console.error("❌ Ошибка при удалении пресета:", error);
+    }
+  };
   
   return (
     // Главный фон на десктопе (очень темный синий)
@@ -399,6 +423,8 @@ export default function Dashboard() {
                 currentGoal={goalWater}
                 profile={appData.profile} // Передаем профиль в настройки!
                 onUpdateProfile={handleUpdateProfile}
+                favoriteDrinks={appData.favoriteDrinks}
+                onDeleteFavorite={handleDeleteFavorite}
                 />
             )}
         </main>
