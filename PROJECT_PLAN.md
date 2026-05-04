@@ -19,14 +19,22 @@
 * [x] Smart Backend logic for partial profile updates.
 * [x] Interactive Settings Tab with slide-up modals.
 
-### 🔵 Phase 3.8: Core Logic & Analytics - ⏳ ALMOST DONE
+### 🔵 Phase 3.8: Core Logic & Analytics - ✅ COMPLETED
 * [x] Implement Logout functionality.
 * [x] Quick Add drink buttons on the Home screen.
 * [x] Quick Add custom amount modal (the "+" button on Home).
 * [x] Custom Drink Builder (saving favorite presets with ⭐).
-* [ ] Advanced Statistics (Weekly/Monthly) with interactive charts (Recharts) in History Tab.
+* [x] Advanced Statistics (Weekly/Monthly) with interactive charts (Recharts) in History Tab.
 
-### 🟣 Phase 4: Desktop Dashboard & Responsive Mastery
-* [ ] Fully responsive layout (mobile-first → desktop).
-* [ ] Desktop UI: comprehensive dashboard view.
-* [ ] Deployment (Vercel + Supabase/Render) - Launching to the real web!
+### 🟣 Phase 4: Smart Architecture & Desktop Mastery - 🚧 IN PROGRESS
+* [ ] **Refactoring (Smart/Dumb Components):**
+  * [ ] Extract logic into `useWaterData.ts` (Custom Hook / "The Brain").
+  * [ ] Create `MobileDashboard.tsx` (Dumb component for mobile view).
+  * [ ] Create `DesktopDashboard.tsx` (Dumb component for desktop view).
+  * [ ] Setup `Dashboard.tsx` as a smart router based on screen width.
+* [ ] **Desktop UI:**
+  * [ ] Build a comprehensive grid-based dashboard for wide screens.
+  * [ ] Implement a sticky sidebar navigation.
+* [ ] **Deployment:** 
+  * [ ] Deploy frontend to Vercel.
+  * [ ] Deploy backend to Render / Supabase.
