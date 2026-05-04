@@ -1,4 +1,3 @@
-```markdown
 # 💧 WaterDash 
 
 > A full-stack hydration tracking application built with React, Node.js, and PostgreSQL. 
@@ -45,42 +44,40 @@ WaterDash is not just a counter; it's a smart hydration dashboard. It calculates
 
 ### 1. Clone the repository
 \`\`\`bash
-git clone [https://github.com/xyp9r/waterdash.git](https://github.com/xyp9r/waterdash.git)
+git clone https://github.com/xyp9r/waterdash.git
 cd waterdash
 \`\`\`
 
 ### 2. Setup Backend & Database
-1. Navigate to the server folder (if applicable) or root.
-2. Install dependencies:
+1. Install dependencies:
    \`\`\`bash
    npm install
    \`\`\`
-3. Start the PostgreSQL database using Docker:
+2. Start the PostgreSQL database using Docker:
    \`\`\`bash
    docker-compose up -d
    \`\`\`
-4. Create a \`.env\` file and add your variables:
+3. Create a \`.env\` file and add your variables:
    \`\`\`env
    DATABASE_URL="postgresql://user:password@localhost:5432/waterdash?schema=public"
    JWT_SECRET="your_super_secret_key"
    \`\`\`
-5. Push the Prisma schema to the database:
+4. Push the Prisma schema to the database:
    \`\`\`bash
    npx prisma db push
    \`\`\`
-6. Start the backend server:
+5. Start the backend server:
    \`\`\`bash
    npm run dev
    \`\`\`
 
 ### 3. Setup Frontend
 1. Open a new terminal tab.
-2. Navigate to the client folder (if applicable).
-3. Install dependencies:
+2. Install dependencies:
    \`\`\`bash
    npm install
    \`\`\`
-4. Start the Vite development server:
+3. Start the Vite development server:
    \`\`\`bash
    npm run dev
    \`\`\`
