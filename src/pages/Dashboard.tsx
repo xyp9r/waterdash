@@ -1,447 +1,93 @@
-import { useState, useEffect } from 'react';
-// ИЗМЕНИЛИ ПУТИ: добавили ../ так как мы теперь находимся внутри папки pages
+import { useState } from 'react';
 import HomeTab from '../components/HomeTab';
 import HistoryTab from '../components/HistoryTab';
 import DrinksTab from '../components/DrinksTab';
 import SettingsTab from '../components/SettingsTab';
+// Подлючаем кабель хука
+import { useWaterData } from '../hooks/useWaterData';
 
 type Tab = 'home' | 'history' | 'drinks' | 'settings';
 
-export interface WaterLog {
-  id: string;
-  amount: number;
-  timestamp: string;
-  name: string;
-  icon: string;
-}
-
-// Новый чертеж для пресетов
-export interface FavoriteDrink {
-  id: string;
-  amount: number;
-  name: string;
-  icon: string;
-}
-
-interface AppState {
-  currentDate: string;
-  todayLogs: WaterLog[];
-  goalWater: number;
-  isFirstLaunch: boolean;
-  historyData: Record<string, WaterLog[]>;
-  favoriteDrinks: FavoriteDrink[]; 
-
-  // Добавляем новую память для профиля
-  profile: {
-    name: string,
-    email: string,
-    gender: string | null;
-    weight: number | null;
-    height: number | null;
-    activity: string | null;
-    weather: string | null;
-  } | null;
-}
-
-// ПЕРЕИМЕНОВАЛИ В Dashboard
 export default function Dashboard() {
+  // Это единственное состояние которое осталось в самом компоненте (переключение вкладок)
   const [activeTab, setActiveTab] = useState<Tab>('home');
 
-  // ЭВОЛЮЦИЯ ПАМЯТИ
-  const [appData, setAppData] = useState<AppState>(() => {
-    const saved = localStorage.getItem('waterDash_data');
-    const today = new Date().toISOString().split('T')[0]; // Получаем дату типа "2026-04-08"
+  // Достаем все из хука
+  const {
+    appData,
+    currentWater,
+    goalWater,
+    handleUpdateProfile,
+    handleAddDrink,
+    handleSaveFavorite,
+    handleDeleteLog,
+    handleDeleteFavorite
+  } = useWaterData();
 
-    if (saved) {
-      const parsed = JSON.parse(saved);
-
-      // МАГИЯ АВТОСБРОСА И АРХИВАЦИИ
-      if (parsed.currentDate !== today) {
-
-        // 1. Считаем, сколько воды было выпито "вчера" (или в последний день захода)
-        const yesterdayTotal = parsed.todayLogs ? parsed.todayLogs.reduce((sum: number, log: WaterLog) => sum + log.amount, 0) : 0;
-
-        // 2. Достаем старых архив (если он есть) или создаем пустой
-        const oldHistory = parsed.historyData || {};
-
-        // Если "вчера" были хоть какие-то логи, берем ВЕСЬ массив и кладем в архив под старой датой
-        if (parsed.todayLogs && parsed.todayLogs.length > 0 && parsed.currentDate) {
-          oldHistory[parsed.currentDate] = parsed.todayLogs;
-        }
-
-        // 4. Начинаем новый день с чистым todayLogs, но сохраняем архив
-        return {
-          currentDate: today,
-          todayLogs: [],
-          goalWater: parsed.goalWater || 2000,
-          isFirstLaunch: parsed.isFirstLaunch ?? false,
-          historyData: oldHistory,
-          profile: parsed.profile || null,
-          favoriteDrinks: parsed.favoriteDrinks || []
-        };
-      }
-
-      // Если день тот же самый, грузим всё как есть
-      return {
-        ...parsed,
-        goalWater: parsed.goalWater || 2000,
-        isFirstLaunch: parsed.isFirstLaunch ?? false,
-        historyData: parsed.historyData || {},
-        profile: parsed.profile || null,
-        favoriteDrinks: parsed.favoriteDrinks || []
-      };
-  }
-
-  // Если пользователь зашел в приложение в первый раз
-  return { 
-    currentDate: today, 
-    todayLogs: [], 
-    goalWater: 2000,
-    isFirstLaunch: true, 
-    historyData: {}, 
-    profile: null,
-    favoriteDrinks: []
-  };
-});
-
-  // Высчитываем воду на лету: просто складываем все выпитые стаканы за день
-  const currentWater = appData.todayLogs.reduce((sum, log) => sum + log.amount, 0);
-  // Теперь цель береться из памяти а не из хардкора!
-  const goalWater = appData.goalWater;
-
-  // Универсальная функция обновления профиля
-  const handleUpdateProfile = async (newData: any) => {
-    const token = localStorage.getItem('waterDashToken');
-    if (!token) return;
-
-    try {
-      // 1. Берем текущие данные профиля и смешиваем с новыми
-      const updatedProfile = { ...appData.profile, ...newData };
-      
-      // 2. Если изменились параметры, влияющие на воду — пересчитываем цель
-      let finalData = { ...newData };
-      
-     // Добавили newData.height в проверку
-      if (newData.weight || newData.gender || newData.height || newData.activity || newData.weather) {
-        const newGoal = calculateHydrationGoal(
-          Number(updatedProfile.weight) || 70,
-          updatedProfile.gender || 'male',
-          Number(updatedProfile.height) || 175, // <-- ПЕРЕДАЕМ РОСТ СЮДА
-          updatedProfile.activity || 'low',
-          updatedProfile.weather || 'temperate'
-        );
-        
-        finalData.goal = newGoal; 
-        console.log(`🧪 Пересчитали цель! Новая норма: ${newGoal} мл`);
-      }
-
-      // 3. Отправляем обновленные данные (включая новую цель) на сервер
-      const response = await fetch('http://localhost:3000/api/users/goal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(finalData)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setAppData(prev => ({
-          ...prev,
-          goalWater: result.user.dailyGoal,
-          profile: result.user
-        }));
-      }
-    } catch (error) {
-      console.error("❌ Ошибка обновления:", error);
-    }
-  };
-
-// Загружаем ВСË из базы при старте
-  useEffect(() => {
-    // Достае бейджик из сейфа
-    const token = localStorage.getItem('waterDashToken');
-    if (!token) return;
-
-    // A) Узнаем нашу цель воды у сервера
-    fetch('http://localhost:3000/api/users/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-            setAppData(prev => ({ 
-              ...prev,
-               goalWater: data.user.dailyGoal,
-               profile: data.user // Сохраняем ВЕСЬ профиль целяком
-             }));
-      }
-    });
-
-    // Б) Скачиваем наши личные стаканы
-    fetch('http://localhost:3000/api/logs', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-    .then((res) => res.json())
-    .then((response) => {
-      if (response.success) {
-
-        // Получаем сегодняшнюю дату в формате "YYYY-MM-DD" локального времени
-        const todayDate = new Date();
-        const todayStr = `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-${String(todayDate.getDate()).padStart(2, '0')}`;
-
-        const sortedTodayLogs: WaterLog[] = [];
-        const sortedHistory: Record<string, WaterLog[]> = {};
-
-        // Перебираем все стаканы которые прислал сервер
-        response.data.forEach((log: any) => {
-          const logDateObj = new Date(log.createdAt);
-          // Узнаем день когда был выпил конкретный стакан
-          const logDateStr = `${logDateObj.getFullYear()}-${String(logDateObj.getMonth() + 1).padStart(2, '0')}-${String(logDateObj.getDate()).padStart(2, '0')}`;
-
-          const formattedLog: WaterLog = {
-                id: log.id,
-                amount: log.amount,
-                name: log.name,
-                icon: log.icon,
-                timestamp: logDateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-
-          // Сортируем!
-          if (logDateStr === todayStr) {
-            // Если стакан выпит сегодня - кладем в сегодняшие
-            sortedTodayLogs.push(formattedLog);
-          } else {
-            // Если в другой день - кладем в архив
-            if (!sortedHistory[logDateStr]) {
-              sortedHistory[logDateStr] = []; // Создаем пустую полку для нового дня, если её ещё нет
-            }
-            sortedHistory[logDateStr].push(formattedLog);
-          }
-        });
-
-        // Обновляем память Дашборда одним махом
-        setAppData(prev => ({
-          ...prev,
-          todayLogs: sortedTodayLogs,
-          historyData: sortedHistory
-        }));
-      }
-    })
-    .catch((error) => console.error("❌ Ошибка загрузки логов:", error));
-
-     // (B) Скачиваем избранные напитки (пресеты)
-          fetch('http://localhost:3000/api/favorites', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          })
-          .then(res => res.json())
-          .then(response => {
-            if (response.success) {
-              setAppData(prev => ({
-                ...prev,
-                favoriteDrinks: response.data
-              }));
-            }
-          })
-          .catch(error => console.error("❌ Ошибка загрузки избранного:", error));
-  }, []);
-
- // УНИВЕРСАЛЬНЫЙ КАЛЬКУЛЯТОР НОРМЫ ВОДЫ
-  const calculateHydrationGoal = (weight: number, gender: string, height: number, activity: string, weather: string) => {
-    let base = gender === 'male' ? weight * 35 : weight * 31;
-
-    // 📈 ДОБАВИЛИ БОНУС ЗА РОСТ (как в онбординге)
-    if (height > 180) base += 300;
-
-    if (activity === 'low') base += 300;
-    if (activity === 'medium') base += 600;
-    if (activity === 'high') base += 1000;
-
-    if (weather === 'warm') base += 300;
-    if (weather === 'hot') base += 600;
-
-    return Math.round(base / 50) * 50;
-  };
-
-  // НАСТОЯЩЕЕ СОХРАНЕНИЕ НА СЕРВЕР (С ТОКЕНОМ)
-  const handleAddDrink = async (amount: number, name: string, icon: string) => {
-    const token = localStorage.getItem('waterDashToken');
-    setActiveTab('home');
-
-    try {
-            const response = await fetch('http://localhost:3000/api/logs', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({ amount, name, icon })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              const newLogFromServer = result.data;
-              const newFrontendLog: WaterLog = {
-                id: newLogFromServer.id,
-                amount: newLogFromServer.amount,
-                name: newLogFromServer.name,
-                icon: newLogFromServer.icon,
-                timestamp: new Date(newLogFromServer.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              };
-
-              setAppData(prev => ({
-                ...prev,
-                todayLogs: [newFrontendLog, ...prev.todayLogs]
-              }));
-            }
-
-    } catch (error) {
-        console.error("❌ Ошибка при сохранении:", error);
-    }
-  };
-
-  // Сохраняем пресет (избранный напиток) на сервер
-  const handleSaveFavorite = async (amount: number, name: string, icon: string) => {
-    const token = localStorage.getItem('waterDashToken');
-
-    try {
-            const response = await fetch('http://localhost:3000/api/favorites', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({ amount, name, icon })
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              // Добавляем пресет в память дашборда, чтобы он сразу появился на экране
-              setAppData(prev => ({
-                ...prev,
-                favoriteDrinks: [...prev.favoriteDrinks, result.data]
-              }));
-            }
-    } catch (error) {
-                  console.error("❌ Ошибка при сохранении пресета:", error);
-    }
-  };
-
-  // НАСТОЯЩЕЕ УДАЛЕНИЕ (С ТОКЕНОМ)
-  const handleDeleteLog = async (idToRemove: string) => {
-    const token = localStorage.getItem('waterDashToken');
-
-    try {
-            const response = await fetch(`http://localhost:3000/api/logs/${idToRemove}`, {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              setAppData(prev => ({
-                ...prev,
-                todayLogs: prev.todayLogs.filter(log => log.id !== idToRemove)
-              }));
-            }
-
-    } catch (error) {
-          console.error("❌ Ошибка при удалении:", error)
-    }
-  };
-
-  // НАСТОЯЩЕЕ УДАЛЕНИЕ ПРЕСЕТА (С ТОКЕНОМ)
-  const handleDeleteFavorite = async (idToRemove: string) => {
-    const token = localStorage.getItem('waterDashToken');
-
-    try {
-            const response = await fetch(`http://localhost:3000/api/favorites/${idToRemove}`, {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              // Вырезаем удаленный напиток из памяти Дашборда
-              setAppData(prev => ({
-                ...prev,
-                favoriteDrinks: prev.favoriteDrinks.filter(drink => drink.id !== idToRemove)
-              }));
-            }
-    } catch (error) {
-                  console.error("❌ Ошибка при удалении пресета:", error);
-    }
-  };
-  
   return (
-    // Главный фон на десктопе (очень темный синий)
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex justify-center font-sans">
-      {/* Контейнер в виде экрана телефона */}
-      <div className="w-full max-w-md bg-slate-900 h-screen relative shadow-2xl overflow-hidden flex flex-col">
-        {/* ШАПКА */}
-        <header className="p-6 pb-2">
-          <h1 className="text-2xl font-bold text-blue-400">WaterDash 💧</h1>
-          <p className="text-sm text-slate-400">Stay hydrated, stay sharp</p>
-        </header>
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex justify-center font-sans">
+        <div className="w-full max-w-md bg-slate-900 h-screen relative shadow-2xl overflow-hidden flex flex-col">
+          
+          {/* Шапка */}
+          <header className="p-6 pb-2">
+            <h1 className="text-2xl font-bold text-blue-400">WaterDash 💧</h1>
+            <p className="text-sm text-slate-400">Stay hydrated, stay sharp</p>
+          </header>
 
-        {/* Главный экран (меняется в зависимости от вкладки) */}
-        <main className="flex-1 overflow-y-auto px-6 pt-6 pb-2 no-scrollbar">
-          {activeTab === 'home' && (
-              <HomeTab 
-                currentWater={currentWater}
-                goalWater={goalWater}
-                // Передаем дефолтную воду для главной кнопки:
-                onAddWater={handleAddDrink}
-                // новые провода для избранного:
-                favoriteDrinks={appData.favoriteDrinks}
-                onSaveFavorite={handleSaveFavorite}
-                />
-            )}
-          {activeTab === 'history' && (
-              <HistoryTab 
-                logs={appData.todayLogs} 
-                onDeleteLog={handleDeleteLog} // провод удаления
-                historyData={appData.historyData} // Подключил историю того что мы пили
-                />
-            )}
-          {activeTab === 'drinks' && (
-            // Прокидываем нашу новую функцию во вкладку напитков:
-              <DrinksTab 
-                onAddDrink={handleAddDrink}
-                favoriteDrinks={appData.favoriteDrinks}
-                onSaveFavorite={handleSaveFavorite}
-                />
-            )}
-          {activeTab === 'settings' && (
-              <SettingsTab 
-                currentGoal={goalWater}
-                profile={appData.profile} // Передаем профиль в настройки!
-                onUpdateProfile={handleUpdateProfile}
-                favoriteDrinks={appData.favoriteDrinks}
-                onDeleteFavorite={handleDeleteFavorite}
-                />
-            )}
-        </main>
+          {/* Главный экран (ТАБЫ) */}
+          <main className="flex-1 overflow-y-auto px-6 pt-6 pb-2 no-scrollbar">
 
-        {/* НИЖНЯЯ НАВИГАЦИЯ */}
-        <nav className="bg-slate-800 border-t border-slate-700 flex justify-around p-4 pb-6">
-          <button 
-            onClick={() => setActiveTab('home')}
-            className={`flex flex-col items-center transition-colors ${activeTab === 'home' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300'}`}
-          >
-            <span className="text-2xl mb-1">🏠</span>
-            <span className="text-xs font-medium">Home</span>
-          </button>
+            {activeTab === 'home' && (
+                  <HomeTab 
+                      currentWater={currentWater}
+                      goalWater={goalWater}
+                      onAddWater={handleAddDrink}
+                      favoriteDrinks={appData.favoriteDrinks}
+                      onSaveFavorite={handleSaveFavorite}
+                    />
+              )}
 
-          <button
-          onClick={() => setActiveTab('history')}
-          className={`flex flex-col items-center transition-colors ${activeTab === 'history' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300'}`} 
+            {activeTab === 'history' && (
+                  <HistoryTab 
+                     logs={appData.todayLogs}
+                     onDeleteLog={handleDeleteLog}
+                     historyData={appData.historyData}
+                    />
+              )}
+
+            {activeTab === 'drinks' && (
+                  <DrinksTab 
+                      onAddDrink={handleAddDrink}
+                      favoriteDrinks={appData.favoriteDrinks}
+                      onSaveFavorite={handleSaveFavorite}
+                    />
+              )}
+
+            {activeTab === 'settings' && (
+                  <SettingsTab 
+                      currentGoal={goalWater}
+                      profile={appData.profile}
+                      onUpdateProfile={handleUpdateProfile}
+                      favoriteDrinks={appData.favoriteDrinks}
+                      onDeleteFavorite={handleDeleteFavorite}
+                    />
+              )}
+
+          </main>
+
+          {/* НИЖНЯЯ НАВИГАЦИЯ */}
+          <nav className="bg-slate-800 border-t border-slate-700 flex justify-around p-4 pb-6">
+            <button
+              onClick={() => setActiveTab('home')}
+              className={`flex flex-col items-center transition-colors ${activeTab === 'home' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              <span className="text-2xl mb-1">🏠</span>
+              <span className="text-xs font-medium">Home</span>
+            </button>
+
+            <button
+            onClick={() => setActiveTab('history')}
+            className={`flex flex-col items-center transition-colors ${activeTab === 'history' ? 'text-blue-400' : 'text-slate-500 hover:text-slate-300'}`} 
           >
             <span className="text-2xl mb-1">📜</span>
             <span className="text-xs font-medium">History</span>
@@ -462,9 +108,8 @@ export default function Dashboard() {
             <span className="text-2xl mb-1">⚙️</span>
             <span className="text-xs font-medium">Settings</span>
           </button>
-        </nav>
-
+          </nav>
+        </div>
       </div>
-    </div>
-  );
+    );
 }
