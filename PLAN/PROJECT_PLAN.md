@@ -27,8 +27,8 @@
 * [x] Advanced Statistics (Weekly/Monthly) with interactive charts (Recharts) in History Tab.
 
 ### 🟣 Phase 4: The Great Refactoring & Multi-Platform UI - 🚧 IN PROGRESS
-* [ ] **Step 1: Brain Extraction (Custom Hook):**
-  * [ ] Isolate all state, fetch requests, and logic into `src/hooks/useWaterData.ts` (The Brain).
+* [x] **Step 1: Brain Extraction (Custom Hook):**
+  * [x] Isolate all state, fetch requests, and logic into `src/hooks/useWaterData.ts` (The Brain).
 * [ ] **Step 2: The Mobile Symbiote (Light Theme First):**
   * [ ] Create `MobileDashboard.tsx` (Dumb component).
   * [ ] Redesign UI based on Waterminder references (Light, clean, aesthetic).
