@@ -63,7 +63,7 @@ export default function SettingsTab({ currentGoal, profile, onUpdateProfile, fav
 			<div className="bg-slate-800/40 rounded-3xl overflow-hidden border border-slate-700/50 backdrop-blur-md">
 				<SettingItem label="Gender" value={profile.gender === 'male' ? 'Male' : profile.gender === 'female' ? 'Female' : 'Set'} onClick={() => setActiveModal('gender')} />
 				<SettingItem label="Weight" value={profile.weight ? `${profile.weight} kg` : 'Set'} onClick={() => setActiveModal('weight')} />
-				<SettingItem label="Hegiht" value={profile.height ? `${profile.height} cm` : 'Set'} onClick={() => setActiveModal('hegiht')} />
+				<SettingItem label="Height" value={profile.height ? `${profile.height} cm` : 'Set'} onClick={() => setActiveModal('height')} />
 				<SettingItem label="Daily Goal" value={`${currentGoal} ml`} onClick={() => setActiveModal('goal')} highlight />
 			</div>
 
