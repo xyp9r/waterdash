@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import  { useNavigate } from 'react-router-dom';
-import type { FavoriteDrink } from '../pages/Dashboard';
+import { useNavigate } from 'react-router-dom';
+import type { FavoriteDrink } from '../hooks/useWaterData';
 
 interface SettingsTabProps {
 		currentGoal: number;

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { WaterLog } from '../App';
+import type { WaterLog } from '../hooks/useWaterData';
 // Импортируем нужные детали конструктора для графика из библиотеки recharts
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 

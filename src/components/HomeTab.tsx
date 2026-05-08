@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // Импортируем четреж для избранных напитков
-import type { FavoriteDrink } from '../pages/Dashboard';
+import type { FavoriteDrink } from '../hooks/useWaterData';
 
 interface HomeTabProps {
 	currentWater: number;

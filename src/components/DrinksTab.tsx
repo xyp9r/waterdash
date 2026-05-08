@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // Импортируем чертеж для фаворитных напитков
-import type { FavoriteDrink } from '../pages/Dashboard';
+import type { FavoriteDrink } from '../hooks/useWaterData';
 
 interface DrinksTabProps {
 	onAddDrink: (amount: number, name: string, icon: string) => void;
