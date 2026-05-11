@@ -15,7 +15,7 @@ const DRINK_TYPES = [
   { id: 'coffee', name: 'Coffee', icon: '☕', color: 'bg-amber-700/20 text-amber-500' },
   { id: 'soda', name: 'Soda', icon: '🥤', color: 'bg-red-500/20 text-red-400' },
   { id: 'juice', name: 'Juice', icon: '🧃', color: 'bg-orange-500/20 text-orange-400' },
-  { id: 'milk', name: 'Milk', icon: '🥛', color: 'bg-slate-200/20 text-slate-200' },
+  { id: 'milk', name: 'Milk', icon: '🥛', color: 'bg-slate-900/20 text-slate-200' },
 ];
 
 export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }: DrinksTabProps) {
@@ -54,9 +54,9 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 	return (
 		// УБРАЛИ класс 'relative' отсюда, чтобы блюр мог растянуться на весь телефон
 		<div className="flex flex-col h-full">
-			<h2 className="text-2xl font-bold text-white mb-6">Choose a Drink</h2>
+			<h2 className="text-2xl font-bold text-slate-500 mb-6">Choose a Drink</h2>
 
-			<div className="flex flex-col gap-3 overflow-y-auto pb-24 no-scrollbar">
+			<div className="flex flex-col gap-3 overflow-y-auto pb-6 no-scrollbar">
 				{DRINK_TYPES.map((drink) => (
 					<button
 						key={drink.id}
@@ -64,13 +64,13 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 							setSelectedDrink({ name: drink.name, icon: drink.icon });
 							setAmountStr('');
 						}}
-						className="bg-slate-800 p-5 rounded-2xl flex items-center gap-5 shadow-sm border border-slate-700/50 hover:border-slate-500 transition-all active:scale-95"
+						className="bg-slate-50 p-5 rounded-3xl flex items-center gap-5 shadow-sm border border-slate-400/50 hover:border-slate-500 transition-all active:scale-95"
 					>
 
 						<div className={`text-3xl p-3 rounded-full ${drink.color}`}>
 							{drink.icon}
 						</div>
-						<span className="text-white font-bold text-xl">{drink.name}</span>
+						<span className="text-slate-600 font-bold text-xl">{drink.name}</span>
 					</button>
 				))}
 			</div>
@@ -80,27 +80,27 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 				<>
 					{/* Исправленный Бэкдроп: теперь он прилипает к самому телефону */}
 					<div 
-						className="absolute top-0 left-0 right-0 bottom-0 bg-slate-950/70 backdrop-blur-sm z-40"
+						className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 transition-opacity"
 						onClick={() => setSelectedDrink(null)}
 					/>
 
 					{/* Сама шторка */}
-					<div className="absolute bottom-0 left-0 right-0 bg-blue-500 rounded-t-[2.5rem] p-6 shadow-[0_-15px_40px_rgba(59,130,246,0.5)] z-50 flex flex-col">
+					<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-300 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
 						
 						{/* 🎯 ПРАВИЛЬНАЯ ШАПКА: relative обертка на всю ширину */}
 						<div className="relative w-full flex justify-center mb-6 pt-2">
 							
 							{/* Центральный блок с иконкой и текстом */}
-							<div className="text-center">
+							<div className="text-center transition-all">
 								<span className="text-4xl block mb-2">{selectedDrink.icon}</span>
-								<h3 className="text-white font-bold text-2xl">{selectedDrink.name}</h3>
+								<h3 className="font-bold text-2xl">{selectedDrink.name}</h3>
 							</div>
 
 							{/* Крестик: абсолют ОТНОСИТЕЛЬНО этой шапки. */}
 							{/* top-1/2 и -translate-y-1/2 ставят его ИДЕАЛЬНО по вертикальному центру этого блока! */}
 							<button
 								onClick={() => setSelectedDrink(null)}
-								className="absolute right-0 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-blue-600/50 p-2 rounded-full active:scale-90 transition-colors"
+								className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white bg-slate-200 p-2 rounded-full active:scale-90 transition-colors"
 							>
 									{/* ИДЕАЛЬНО РОВНЫЙ КРЕСТИК */}
 									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -112,13 +112,13 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 						</div>
 
 						{/* Экран для ввода цифр */}
-						<div className="w-full flex justify-center items-center min-h-[60px] mb-6">
+						<div className="w-full flex justify-center items-center min-h-[60px] mb-6 border-b border-slate-300 pb-4">
 							
 							{/* Обертка, которая держит ТОЛЬКО цифры. Flexbox центрирует только её! */}
 							<div className="relative flex items-center">
 								
 								{/* Сама цифра всегда железно по центру */}
-								<span className="text-white font-bold text-6xl tracking-tight">
+								<span className="text-slate-800 font-bold text-6xl tracking-tight">
 									{amountStr || '0'}
 								</span>
 
@@ -127,11 +127,11 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 								{/* ml-3 дает отступ от самой цифры */}
 								<div className="absolute left-full ml-3 flex items-center gap-3">
 									
-									<span className="text-blue-200 text-sm uppercase font-bold tracking-wider mt-2">ml</span>
+									<span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80">ml</span>
 									
 									{/* Кнопка удаления появляется только если есть цифры */}
 									{amountStr && (
-										<button onClick={handleDelete} className="text-blue-200 hover:text-white active:scale-90 transition-colors mt-1">
+										<button onClick={handleDelete} className="text-slate-400 hover:text-red-400 active:scale-90 transition-colors mt-1">
 											<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
 										</button>
 									)}
@@ -161,7 +161,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 									<button
 										key={num}
 										onClick={() => handleNumpad(num)}
-										className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-2xl h-14 rounded-2xl transition-colors"
+										className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300"
 									>
 										{num}
 									</button>
@@ -169,14 +169,14 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 
 								<button
 									onClick={() => handleNumpad('00')}
-									className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-xl h-14 rounded-2xl transition-colors"
+									className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300"
 								>
 									00
 								</button>
 
 								<button
 									onClick={() => handleNumpad('0')}
-									className="bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-2xl h-14 rounded-2xl transition-colors"
+									className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300"
 								>
 									0
 								</button>
@@ -185,7 +185,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 								<button
 									onClick={handleSubmit}
 									disabled={!amountStr}
-									className="bg-white text-blue-500 disabled:bg-white/50 disabled:text-blue-500/50 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg"
+									className="bg-blue-500 text-white disabled:bg-slate-200 disabled:text-slate-400 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg"
 								>
 									<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 								</button>
