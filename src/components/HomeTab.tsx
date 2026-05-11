@@ -208,7 +208,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                             	))}
                             	<button onClick={() => handleNumpad('00')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300">00</button>
                             	<button onClick={() => handleNumpad('0')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300">0</button>
-                            	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-900 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
+                            	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-200 disabled:text-slate-400 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
                             	    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                             	</button>
                             </div>
