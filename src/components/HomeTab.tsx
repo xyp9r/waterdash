@@ -67,35 +67,35 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 		};
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full pb-10">
+		<div className="flex flex-col items-center justify-center h-full">
 			
 			{/* Круг прогресса */}
-			<div className="relative flex items-center justify-center">
+			<div className="relative flex items-center justify-center pt-60">
 				<svg className="transform -rotate-90 w-72 h-72">
-                    <circle cx="144" cy="144" r={radius} stroke="currentColor" strokeWidth="20" fill="transparent" className="text-slate-800" />
+                    <circle cx="144" cy="144" r={radius} stroke="currentColor" strokeWidth="20" fill="transparent" className="text-slate-300" />
                     <circle cx="144" cy="144" r={radius} stroke="currentColor" strokeWidth="20" fill="transparent" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className="text-blue-500 transition-all duration-1000 ease-out" />
                 </svg>
                 <div className="absolute flex flex-col items-center">
-                	<span className="text-5xl font-bold text-white drop-shadow-lg">{currentWater}</span>
-                	<span className="text-lg text-slate-400 mt-1">/ {goalWater}</span>
+                	<span className="text-5xl font-bold text-slate-800 drop-shadow-lg">{currentWater}</span>
+                	<span className="text-lg text-slate-900 mt-1">/ {goalWater}</span>
                 </div>
 			</div>
 
 			{/* БЛОК QUICK ADD */}
 			<div className="mt-12 w-full max-w-xs space-y-4">
-				<h3 className="text-slate-400 text-sm font-medium text-center uppercase tracking-widest mb-4">Quick Add</h3>
+				<h3 className="text-slate-600 text-sm font-medium text-center uppercase tracking-widest mb-4">Quick Add</h3>
 
 				{/* 1. БАЗОВЫЕ КНОПКИ */}
 
 				<button
 				onClick={() => onAddWater(250, 'Water', '💧')}
-				className="w-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 flex items-center justify-between px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-blue-500/30" 
+				className="w-full bg-blue-50 text-blue-500 hover:bg-blue-500/20 flex items-center justify-between px-6 py-4 rounded-3xl font-bold text-lg transition-all active:scale-95 border border-slate-300 shadow-sm" 
 				>
 					<span className="flex items-center gap-3"><span className="text-2xl">💧</span> Water</span><span>250 ml</span>
 				</button>
 				<button
 					onClick={() => onAddWater(150, 'Coffee', '☕')}
-					className="w-full bg-amber-700/10 text-amber-500 hover:bg-amber-700/20 flex items-center justify-between px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-amber-700/30"
+					className="w-full bg-amber-50 text-amber-500 hover:bg-amber-700/20 flex items-center justify-between px-6 py-4 rounded-3xl font-bold text-lg transition-all active:scale-95 border border-amber-300 shadow-sm"
 				>
 					<span className="flex items-center gap-3"><span className="text-2xl">☕</span> Coffee</span><span>150 ml</span>
 				</button>
@@ -103,26 +103,26 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 				{/* ИЗБРАННЫЕ НАПИТКИ */}
 
 				{favoriteDrinks.length > 0 && (
-						<div className="pt-4 border-t border-slate-800/50 space-y-3">
-							<h4 className="text-slate-500 text-xs font-medium text-center uppercase tracking-widest mb-3">Favorites</h4>
+						<div className="pt-4 border-t border-slate-400/50 space-y-3">
+							<h4 className="text-slate-800 text-xs font-medium text-center uppercase tracking-widest mb-3">Favorites</h4>
 							{favoriteDrinks.map((drink) => (
 										<button
 												key={drink.id}
 												onClick={() => onAddWater(drink.amount, drink.name, drink.icon)}
-												className="w-full bg-slate-800/50 text-slate-300 hover:bg-slate-700 flex items-center justify-between px-6 py-3 rounded-2xl font-bold text-base transition-all active:scale-95 border border-slate-700/50"
+												className="w-full bg-blue-50/20 text-slate-800 hover:bg-blue-200 flex items-center justify-between px-6 py-3 rounded-3xl font-bold text-base transition-all active:scale-95 border border-slate-300"
 											>
 													<span className="flex items-center gap-3"><span className="text-xl">{drink.icon}</span> {drink.name}</span>
-													<span className="text-slate-400">{drink.amount} ml</span>
+													<span className="text-slate-500">{drink.amount} ml</span>
 											</button>
 								))}
 						</div>
 					)}
 
 				{/* Кнопка кастомного объема */}
-				<div className="pt-2">
+				<div className="pt-2 pb-5">
 					<button
 						onClick={() => setIsModalOpen(true)}
-						className="w-full bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 border border-slate-700/50"
+						className="w-full bg-blue-50 text-slate-800 hover:bg-blue-200 flex items-center justify-center gap-2 px-6 py-4 rounded-3xl font-bold text-lg transition-all active:scale-95 border border-slate-300"
 					>
 						<span>➕ Custom Amount</span>
 					</button>
@@ -138,28 +138,28 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 						/>
 
 						{/* Поменял цвет шторки на нейтральный (slate) потому что напитки могут быть разных цветов */}
-						<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 border-t border-slate-800 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
+						<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-300 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
 						<div className="relative w-full flex justify-center mb-6 pt-2">
                             <div className="text-center transition-all">
                                 {/* 4. ДИНАМИЧЕСКИЙ ЗАГОЛОВОК: Меняется в зависимости от выбора */}
                                 <span className="text-4xl block mb-2">{selectedCustomDrink.icon}</span>
                                 <h3 className={`font-bold text-2xl ${selectedCustomDrink.color}`}>Add {selectedCustomDrink.name}</h3>
                             </div>
-                            <button onClick={() => { setIsModalOpen(false); setAmountStr(''); setSelectedCustomDrink(DRINK_TYPES[0]); }} className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white bg-slate-800 p-2 rounded-full active:scale-90 transition-colors">
+                            <button onClick={() => { setIsModalOpen(false); setAmountStr(''); setSelectedCustomDrink(DRINK_TYPES[0]); }} className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white bg-slate-200 p-2 rounded-full active:scale-90 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>                            
                             </button>
                         </div>
 
                         {/* 5. НОВАЯ КАРУСЕЛЬ НАПИТКОВ */}
-                        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 mb-2 -mx-2 px-2">
+                        <div className="flex gap-3 overflow-x-auto no-scrollbar pt-1 pb-4 mb-2 -mx-1 px-2">
                             {DRINK_TYPES.map(drink => (
                                 <button
                                     key={drink.id}
                                     onClick={() => setSelectedCustomDrink(drink)}
                                     className={`flex flex-col items-center min-w-[70px] p-3 rounded-2xl border transition-all ${
                                         selectedCustomDrink.id === drink.id 
-                                        ? `${drink.bg} border-${drink.color.split('-')[1]}-500/50 scale-105` 
-                                        : 'bg-slate-800 border-slate-700 hover:border-slate-600'
+                                        ? `${drink.bg} border-${drink.color.split('-')[1]}-300 scale-105` 
+                                        : 'bg-white border-slate-300 hover:border-blue-300'
                                     }`}
                                 >
                                     <span className="text-2xl mb-1">{drink.icon}</span>
@@ -171,9 +171,9 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                         </div>
 
                         {/* Экран для ввода цифр */}
-                        <div className="w-full flex justify-center items-center min-h-[60px] mb-6 border-b border-slate-800 pb-4">
+                        <div className="w-full flex justify-center items-center min-h-[60px] mb-6 border-b border-slate-300 pb-4">
                             <div className="relative flex items-center">
-                                <span className="text-white font-bold text-6xl tracking-tight">{amountStr || '0'}</span>
+                                <span className="text-slate-800 font-bold text-6xl tracking-tight">{amountStr || '0'}</span>
                                 <div className="absolute left-full ml-3 flex items-center gap-3">
                                     <span className={`${selectedCustomDrink.color} text-sm uppercase font-bold tracking-wider mt-2 opacity-80`}>ml</span>
                                     {amountStr && (
@@ -204,11 +204,11 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                         	{/* Основной нампад (занимает 3 колоки) */}
                         	<div className="col-span-3 grid grid-cols-3 gap-2">
                             	{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
-                            	    <button key={num} onClick={() => handleNumpad(num)} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">{num}</button>
+                            	    <button key={num} onClick={() => handleNumpad(num)} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors">{num}</button>
                             	))}
-                            	<button onClick={() => handleNumpad('00')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-xl h-14 rounded-2xl transition-colors">00</button>
-                            	<button onClick={() => handleNumpad('0')} className="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-bold text-2xl h-14 rounded-2xl transition-colors">0</button>
-                            	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-800 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
+                            	<button onClick={() => handleNumpad('00')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors">00</button>
+                            	<button onClick={() => handleNumpad('0')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors">0</button>
+                            	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-900 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
                             	    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                             	</button>
                             </div>
