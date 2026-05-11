@@ -85,7 +85,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 					/>
 
 					{/* Сама шторка */}
-					<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-300 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
+					<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border border-slate-300/50 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
 						
 						{/* 🎯 ПРАВИЛЬНАЯ ШАПКА: relative обертка на всю ширину */}
 						<div className="relative w-full flex justify-center mb-6 pt-2">
