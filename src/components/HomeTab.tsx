@@ -109,7 +109,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 										<button
 												key={drink.id}
 												onClick={() => onAddWater(drink.amount, drink.name, drink.icon)}
-												className="w-full bg-blue-50/20 text-slate-800 hover:bg-blue-200 flex items-center justify-between px-6 py-3 rounded-3xl font-bold text-base transition-all active:scale-95 border border-slate-300"
+												className="w-full text-slate-800 hover:border-slate-300 flex items-center justify-between px-6 py-3 rounded-3xl font-bold text-base transition-all active:scale-95 bg-white border border-slate-100 shadow-sm"
 											>
 													<span className="flex items-center gap-3"><span className="text-xl">{drink.icon}</span> {drink.name}</span>
 													<span className="text-slate-500">{drink.amount} ml</span>
@@ -122,7 +122,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 				<div className="pt-2 pb-5">
 					<button
 						onClick={() => setIsModalOpen(true)}
-						className="w-full bg-blue-50 text-slate-800 hover:bg-blue-200 flex items-center justify-center gap-2 px-6 py-4 rounded-3xl font-bold text-lg transition-all active:scale-95 border border-slate-300"
+						className="w-full text-slate-800 hover:border-slate-300 flex items-center justify-center gap-2 px-6 py-4 rounded-3xl font-bold text-lg transition-all active:scale-95 bg-white border border-slate-100 shadow-sm"
 					>
 						<span>➕ Custom Amount</span>
 					</button>
