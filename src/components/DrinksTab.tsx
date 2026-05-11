@@ -64,7 +64,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 							setSelectedDrink({ name: drink.name, icon: drink.icon });
 							setAmountStr('');
 						}}
-						className="bg-slate-50 p-5 rounded-3xl flex items-center gap-5 shadow-sm border border-slate-400/50 hover:border-slate-500 transition-all active:scale-95"
+						className="p-5 rounded-3xl flex items-center gap-5 bg-white border border-slate-100 shadow-sm hover:border-slate-200 transition-all active:scale-95"
 					>
 
 						<div className={`text-3xl p-3 rounded-full ${drink.color}`}>
