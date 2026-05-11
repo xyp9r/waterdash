@@ -74,20 +74,20 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 	const renderLogCard = (log: WaterLog, canDelete: boolean) => (
 			<div
 					key={log.id}
-					className="bg-slate-800 p-4 rounded-xl flex items-center justify-between shadow-sm border border-slate-700/50 hover:border-blue-500/30 transition-colors mb-3"
+					className="bg-blue-50 p-4 rounded-xl flex items-center justify-between shadow-sm border border-slate-300/50 hover:border-blue-500/30 transition-colors mb-3"
 				>
 					<div className="flex items-center gap-4">
-						<div className="bg-blue-700/50 p-2 rounded-lg">
+						<div className="bg-slate-200 p-2 rounded-lg">
 							<span className="text-xl">{log.icon}</span>
 						</div>
 						<div className="flex flex-col">
-							<span className="text-white font-bold">{log.amount} ml</span>
+							<span className="text-slate-500 font-bold">{log.amount} ml</span>
 							<span className="text-slate-400 text-xs">{log.name}</span>
 						</div>
 					</div>
 
 					<div className="flex items-center gap-3">
-						<span className="text-slate-500 text-sm font-medium bg-slate-900 px-3 py-1 rounded-md">
+						<span className="text-slate-500 text-sm font-medium bg-slate-200 px-3 py-1 rounded-md">
 							{log.timestamp}
 						</span>
 						{/* Кнопка удаления показывается только если canDelete === true */}
@@ -112,17 +112,17 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 	return (
 			<div className="flex flex-col h-full">
 
-			<div className="mb-10 bg-slate-800/40 p-5 rounded-3xl border border-slate-700/50">
+			<div className="mb-10 bg-slate-300/40 p-5 rounded-3xl border border-slate-300/50">
 				
 				<div className="flex items-center justify-between mb-6">
 					<h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">Analytics</h3>
 
 					{/* Переключатель месяц/неделя */}
-					<div className="flex bg-slate-900/80 p-1 rounded-lg border border-slate-700/50">
+					<div className="flex bg-slate-400/80 p-1 rounded-lg border border-slate-200">
 						{/* При клике меняем стейт на 'week' useMemo это заметит и пересчитает график на 7 дней */}
 						<button
 							onClick={() => setTimeframe('week')}
-							className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all uppercase tracking-wider ${timeframe === 'week' ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+							className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all uppercase tracking-wider ${timeframe === 'week' ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-200 hover:text-slate-300'}`}
 						>
 							W
 						</button>
@@ -183,16 +183,16 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 			</div>
 
 			{/* СЕГОДНЯШИЕ ЛОГИ */}
-			<div className="flex flex-col mb-10">
-				<h2 className="text-2xl font-bold text-white mb-6 shrink-0">Today's Logs</h2>
+			<div className="flex flex-col">
+				<h2 className="text-2xl font-bold text-slate-600 mb-6 shrink-0">Today's Logs</h2>
 
 				{logs.length === 0 ? (
 						<div className="flex flex-col items-center justify-center text-slate-500 gap-3 py-6">
-							<span className="text-5xl opacity=50">🏜️</span>
+							<span className="text-5xl opacity-50">🏜️</span>
 							<p>No water logget yet today</p>
 						</div>
 					) : (
-						<div className="overflow-y-auto pr-2 no-scrollbar max-h-[35vh]">
+						<div className="overflow-y-auto pr-2 no-scrollbar mb-3">
 							{/* Рендерим сегодняшие логи, true - означает что кнопку удаления показывать нужно */}
 							{[...logs].map((log) => renderLogCard(log, true))}
 						</div>
@@ -203,7 +203,7 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 			{/* Показываем этот блок если в архиве есть хотя бы один день */}
 			{sortedHistoryDates.length > 0 && (
 					<div>
-						<h2 className="text-2xl font-bold text-white mb-6">Past Days</h2>
+						<h2 className="text-2xl font-bold text-slate-500 mb-6">Past Days</h2>
 						<div className="space-y-8 pr-2">
 							
 							{/* Проходимся по каждой дате из архива */}
@@ -214,9 +214,12 @@ export default function HistoryTab({ logs, onDeleteLog, historyData = {} }: Hist
 								return (
 										<div key={date} className="flex flex-col">
 											{/* Заголовок дня (дата + общая сумма) */}
-											<div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-2">
-												<span className="text-slate-300 font-medium flex items-center gap-2">
-													<span>📅</span> {date}
+											<div className="flex items-center justify-between mb-4 border-b border-slate-400 pb-2">
+												<svg className="text-slate-600" width="23px" height="23px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<path d="M3 9H21M7 3V5M17 3V5M7 13H17V17H7V13ZM6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												</svg>
+												<span className="text-slate-600 font-medium flex justify-start gap-2 pr-44">
+													{date}
 												</span>
 												<span className="text-blue-400 font-bold text-sm">
 													{dayTotal} ml Total
