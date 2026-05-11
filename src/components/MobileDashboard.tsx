@@ -54,7 +54,7 @@ export default function MobileDashboard({
 
 					{/* Контент (Вкладки) */}
 					{/* ВАЖНО: Сами компоненты табов мы пока не переписывали, они будут темными, это нормально! */}
-					<main className="flex-1 overflow-y-auto px-6 pt-6 pb-2 no-scrollbar">
+					<main className="flex-1 overflow-y-auto px-6 pt-6 no-scrollbar">
 						{activeTab === 'home' && (
 								<HomeTab 
 										currentWater={currentWater}
