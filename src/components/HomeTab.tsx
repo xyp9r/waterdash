@@ -67,10 +67,10 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 		};
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full">
+		<div className="flex flex-col items-center h-full">
 			
 			{/* Круг прогресса */}
-			<div className="relative flex items-center justify-center pt-60">
+			<div className="relative flex items-center justify-center mt-1">
 				<svg className="transform -rotate-90 w-72 h-72">
                     <circle cx="144" cy="144" r={radius} stroke="currentColor" strokeWidth="20" fill="transparent" className="text-slate-300" />
                     <circle cx="144" cy="144" r={radius} stroke="currentColor" strokeWidth="20" fill="transparent" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className="text-blue-500 transition-all duration-1000 ease-out" />
@@ -175,7 +175,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                             <div className="relative flex items-center">
                                 <span className="text-slate-800 font-bold text-6xl tracking-tight">{amountStr || '0'}</span>
                                 <div className="absolute left-full ml-3 flex items-center gap-3">
-                                    <span className={`${selectedCustomDrink.color} text-sm uppercase font-bold tracking-wider mt-2 opacity-80`}>ml</span>
+                                    <span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80">ml</span>
                                     {amountStr && (
                                         <button onClick={handleDelete} className="text-slate-400 hover:text-red-400 active:scale-90 transition-colors mt-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
@@ -204,10 +204,10 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                         	{/* Основной нампад (занимает 3 колоки) */}
                         	<div className="col-span-3 grid grid-cols-3 gap-2">
                             	{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
-                            	    <button key={num} onClick={() => handleNumpad(num)} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors">{num}</button>
+                            	    <button key={num} onClick={() => handleNumpad(num)} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300">{num}</button>
                             	))}
-                            	<button onClick={() => handleNumpad('00')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors">00</button>
-                            	<button onClick={() => handleNumpad('0')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors">0</button>
+                            	<button onClick={() => handleNumpad('00')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300">00</button>
+                            	<button onClick={() => handleNumpad('0')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300">0</button>
                             	<button onClick={handleSubmit} disabled={!amountStr} className="bg-blue-500 text-white disabled:bg-slate-900 disabled:text-slate-600 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg">
                             	    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                             	</button>
