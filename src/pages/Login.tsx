@@ -11,7 +11,7 @@ export default function Login() {
 	const navigate = useNavigate(); // Штука, чтобы программно перекидывать юзера
 
 	// Функция, которая сработает при нажатии на кнопку "Войти"
-	const handleLogin = async (e: React.FromEvent) => {
+	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault(); // Останавливаем стандартную перезагрузку страницы браузером
 
 		try {
@@ -45,10 +45,10 @@ export default function Login() {
 	};
 
 	return (
-			<div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 font-sans">
-				<div className="w-full max-w-md bg-stale-900 rounded-2xl shadow-2xl p-8 border border-slate-800">
+			<div className="min-h-screen bg-blue-50 flex items-center justify-center p-4 font-sans">
+				<div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
 					
-					<h2 className="text-3xl font-bold text-blue-400 mb-6 text-center">C возвращением! 💧</h2>
+					<h2 className="text-3xl font-bold text-blue-500 mb-6 text-center">Welcome back! 💧</h2>
 
 					<form onSubmit={handleLogin} className="space-y-4">
 						{/* ПОЛЕ EMAIL */}
@@ -58,20 +58,20 @@ export default function Login() {
 									type="email"
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
-									className="w-full bg-slate-800 text-white rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-									placeholder="hacker@waterdash.com"
+									className="w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400"
+									placeholder="water@gmail.com"
 									required
 							/>
 						</div>
 
 						{/* ПОЛЕ ПАРОЛЬ */}
 						<div>
-							<label className="block text-slate-400 text-sm mb-2">Пароль</label>
+							<label className="block text-slate-400 text-sm mb-2">Password</label>
 							<input 
 									type="password"
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
-									className="w-full bg-slate-800 text-white rounded-lg p-3 outline-none focus:ring-2 focus:ring-blie-500 transition-all"
+									className="w-full text-slate-800 bg-white border border-slate-100 shadow-sm rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400"
 									placeholder="••••••••"
 									required
 							/>
@@ -79,18 +79,18 @@ export default function Login() {
 
 						{/* КНОПКА */}
 						<button
-							tyle="submit"
+							type="submit"
 							className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg mt-6 transition-colors"
 						>
-							Войти в матрицу
+							Log In
 						</button>
 					</form>
 
 					{/* ССЫЛКА НА РЕГИСТРАЦИЮ */}
 					<p className="mt-6 text-center text-slate-400 text-sm">
-						Еще нет аккаунта?{' '}
+						Don't have an account?{' '}
 						<Link to="/register" className="text-blue-400 hover:underline">
-							Зарегестрироваться
+							Register
 						</Link>
 					</p>
 
