@@ -50,7 +50,7 @@ export default function Register() {
 			MySwal.fire({
 				        icon: "error",
 				        title: "Network error",
-				        text: "IUnable to connect to the server. Please check your internet connection or try again later.",
+				        text: "Unable to connect to the server. Please check your internet connection or try again later.",
 				        confirmButtonColor: '#3b82f6' // покрасим кнопку в синий цвет Tailwind
 				    });
 		}
