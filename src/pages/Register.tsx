@@ -91,7 +91,7 @@ export default function Register() {
 
 						{/* ПОЛЕ ПАРОЛЬ */}
 						<div>
-							<label className="block text-slate-400 text-sm mb-2">Пароль</label>
+							<label className="block text-slate-400 text-sm mb-2">Password</label>
 							<input 
 								type="password"
 								value={password}
