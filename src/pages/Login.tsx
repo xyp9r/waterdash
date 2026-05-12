@@ -1,6 +1,11 @@
 import { useState } from 'react';
 // Нам понадобяться эти инструменты для переходов между страницами
 import { useNavigate, Link } from 'react-router-dom';
+// Красивые алерты импорт
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 export default function Login() {
 
@@ -14,6 +19,7 @@ export default function Login() {
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault(); // Останавливаем стандартную перезагрузку страницы браузером
 
+
 		try {
 				// Стучимся на наш сервер (как делали в консоли)
 				const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -26,7 +32,7 @@ export default function Login() {
 
 				// Если сервер сказал "Успешно"
 				if (result.success) {
-					console.log("✅ Успешный вход! Токен получен.");
+					console.log("✅ Successful logn! I have a token.");
 
 					// Прячем токен в надежный сейф браузера (localStorage)
 					localStorage.setItem('waterDashToken', result.token);
@@ -34,13 +40,22 @@ export default function Login() {
 					// Магия Роутера: мгновенно телепортируем юзера в Дашборд!
 					navigate('/dashboard');
 				} else {
-					// Если пароль неверный или юзера нет - выдаём ошибку сервера
-					alert("❌ Ошибка: " + result.error);
+				    MySwal.fire({
+				        icon: "error",
+				        title: "Login error",
+				        text: result.error || "Incorrect email address or password!",
+				        confirmButtonColor: '#3b82f6' // покрасим кнопку в синий цвет Tailwind
+				    });
 				}
 
 		} catch (error) {
-			console.error("Ошибка при входе:", error);
-			alert("Не удалось подключиться к серверу. Бэкенд запущен?");
+			console.error("Login error:", error);
+			MySwal.fire({
+				        icon: "error",
+				        title: "Network error",
+				        text: "Unable to connect to the server. Please check your internet connection or try again later.",
+				        confirmButtonColor: '#3b82f6' // покрасим кнопку в синий цвет Tailwind
+				    });
 		}
 	};
 
