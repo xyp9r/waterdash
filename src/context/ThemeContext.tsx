@@ -27,8 +27,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 		// Тот самый if о котором я говорил с ИИ
 		if (theme === 'dark') {
 			root.classList.add('dark');
+			root.classList.remove('light');
 		} else {
 			root.classList.remove('dark');
+			root.classList.add('light');
 		}
 
 		// Незабываем сохранить выбор юзера в блокнот localStorage
@@ -52,7 +54,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
 	const context = useContext(ThemeContext);
 	if (context === undefined) {
-		throw new Error('useTehem must be used within a ThemeProvider');
+		throw new Error('useTheme must be used within a ThemeProvider');
 	}
 	return context;
 }
