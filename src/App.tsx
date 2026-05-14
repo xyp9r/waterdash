@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Onboarding from './pages/Onboarding';
+// Импортируем переключатель тем
+import ThemeToggle from './components/ThemeToggle';
 
 // ==========================================
 // 🛡️ ОХРАННИК (PROTECTED ROUTE)
@@ -26,6 +28,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 export default function App() {
 	return (
 		<BrowserRouter>
+			<ThemeToggle />
 			<Routes>
 				
 				{/* Если юзер просто зашел на сайт ("/") - перенаправляем на Дашборд */}
