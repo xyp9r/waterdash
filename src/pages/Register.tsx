@@ -57,20 +57,32 @@ export default function Register() {
 	};
 
 	return (
-			<div className="min-h-screen bg-blue-50 flex items-center justify-center p-4 font-sans">
-				<div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+			<div className="
+				min-h-screen bg-blue-50 flex items-center justify-center p-4 font-sans
+				dark:bg-slate-900 
+				">
+				<div className="
+					w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-slate-100
+					dark:bg-slate-800 dark:border dark:border-slate-700
+					">
 					
 					<h2 className="text-3xl font-bold text-blue-500 mb-6 text-center">Register 💧</h2>
 
 					<form onSubmit={handleRegister} className="space-y-4">
 						{/* ПОЛЕ ИМЯ */}
 						<div>
-							<label className="block text-slate-400 text-sm mb-2">Your Name</label>
+							<label className="
+								block text-slate-400 text-sm mb-2
+								dark:text-slate-100
+								">Your Name</label>
 							<input 
 								type="text"
 								value={name}
 								onChange={(e) => setName(e.target.value)}
-								className="w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400"
+								className="
+								w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400
+								dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300 dark:focus:ring-slate-700
+								"
 								placeholder="John"
 								required
 							/>
@@ -78,12 +90,18 @@ export default function Register() {
 
 						{/* ПОЛЕ EMAIL */}
 						<div>
-							<label className="block text-slate-400 text-sm mb-2">Email</label>
+							<label className="
+								block text-slate-400 text-sm mb-2
+								dark:text-slate-100
+								">Email</label>
 							<input 
 								type="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
-								className="w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400"
+								className="
+								w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400
+								dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300 dark:focus:ring-slate-700
+								"
 								placeholder="water@gmail.com"
 								required
 							/>
@@ -91,12 +109,18 @@ export default function Register() {
 
 						{/* ПОЛЕ ПАРОЛЬ */}
 						<div>
-							<label className="block text-slate-400 text-sm mb-2">Password</label>
+							<label className="
+								block text-slate-400 text-sm mb-2
+								dark:text-slate-100
+								">Password</label>
 							<input 
 								type="password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
-								className="w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400"
+								className="
+								w-full bg-white border border-slate-100 shadow-sm text-slate-800 rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-200 transition-all placeholder:text-slate-400
+								dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300 dark:focus:ring-slate-700
+								"
 								placeholder="••••••••"
 								required
 							/>
