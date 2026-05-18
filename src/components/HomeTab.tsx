@@ -144,7 +144,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
 
 						{/* Поменял цвет шторки на нейтральный (slate) потому что напитки могут быть разных цветов */}
 						<div className="
-							fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-300 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up
+							fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-500/10 border-t border-slate-500 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up
 							dark:bg-blue-900/10 dark:border-slate-700
 							">
 						<div className="relative w-full flex justify-center mb-6 pt-2">
@@ -153,7 +153,7 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                                 <span className="text-4xl block mb-2">{selectedCustomDrink.icon}</span>
                                 <h3 className={`font-bold text-2xl ${selectedCustomDrink.color}`}>Add {selectedCustomDrink.name}</h3>
                             </div>
-                            <button onClick={() => { setIsModalOpen(false); setAmountStr(''); setSelectedCustomDrink(DRINK_TYPES[0]); }} className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white bg-slate-200 p-2 rounded-full active:scale-90 transition-colors dark:bg-blue-900/20">
+                            <button onClick={() => { setIsModalOpen(false); setAmountStr(''); setSelectedCustomDrink(DRINK_TYPES[0]); }} className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white bg-slate-100/10 p-2 rounded-full active:scale-90 transition-colors dark:bg-blue-900/20">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>                            
                             </button>
                         </div>
@@ -167,11 +167,11 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                                     className={`flex flex-col items-center min-w-[70px] p-3 rounded-2xl border transition-all ${
                                         selectedCustomDrink.id === drink.id 
                                         ? `${drink.bg} border-${drink.color.split('-')[1]}-300 scale-105` 
-                                        : 'bg-white border-slate-300 hover:border-blue-300 dark:bg-blue-900/10 dark:border-slate-700'
+                                        : 'bg-white/1 border-slate-600 hover:border-blue-300 dark:bg-blue-900/10 dark:border-slate-700'
                                     }`}
                                 >
                                     <span className="text-2xl mb-1">{drink.icon}</span>
-                                    <span className={`text-xs font-bold ${selectedCustomDrink.id === drink.id ? drink.color : 'text-slate-400'}`}>
+                                    <span className={`text-xs font-bold ${selectedCustomDrink.id === drink.id ? drink.color : 'text-slate-300'}`}>
                                         {drink.name}
                                     </span>
                                 </button>
@@ -181,9 +181,9 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                         {/* Экран для ввода цифр */}
                         <div className="w-full flex justify-center items-center min-h-[60px] mb-6 border-b border-slate-300 pb-4">
                             <div className="relative flex items-center">
-                                <span className="text-slate-800 font-bold text-6xl tracking-tight dark:text-slate-200">{amountStr || '0'}</span>
+                                <span className="text-slate-200 font-bold text-6xl tracking-tight dark:text-slate-200">{amountStr || '0'}</span>
                                 <div className="absolute left-full ml-3 flex items-center gap-3">
-                                    <span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80">ml</span>
+                                    <span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80 text-slate-300">ml</span>
                                     {amountStr && (
                                         <button onClick={handleDelete} className="text-slate-400 hover:text-red-400 active:scale-90 transition-colors mt-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg>
@@ -213,16 +213,16 @@ export default function HomeTab({ currentWater, goalWater, onAddWater, favoriteD
                         	<div className="col-span-3 grid grid-cols-3 gap-2">
                             	{['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((num) => (
                             	    <button key={num} onClick={() => handleNumpad(num)} className="
-                            	    	bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300
+                            	    	bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
                             	    	dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200
                             	    	">{num}</button>
                             	))}
-                            	<button onClick={() => handleNumpad('00')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300
+                            	<button onClick={() => handleNumpad('00')} className="bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
                             	    	dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200">00</button>
-                            	<button onClick={() => handleNumpad('0')} className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300
+                            	<button onClick={() => handleNumpad('0')} className="bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
                             	    	dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200">0</button>
                             	<button onClick={handleSubmit} disabled={!amountStr} className="
-                            		bg-blue-500 text-white disabled:bg-slate-200 disabled:text-slate-400 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg
+                            		bg-blue-500/80 text-white disabled:bg-slate-900/10 disabled:text-slate-300 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg
                             		dark:disabled:bg-slate-900/10 dark:bg-blue-900
                             		">
                             	    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
