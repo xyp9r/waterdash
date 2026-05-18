@@ -105,22 +105,37 @@ export default function Onboarding() {
 	};
 
 	return (
-			<div className="min-h-screen bg-blue-50 flex items-center justify-center p-4 font-sans">
-				<div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
+			<div className="
+				min-h-screen bg-blue-50 flex items-center justify-center p-4 font-sans
+				dark:bg-slate-900
+				">
+				<div className="
+					max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-100
+					dark:bg-slate-800 dark:border-slate-700
+					">
 					
 					<div className="text-center mb-8">
 						<span className="text-6xl mb-4 block">💧</span>
-						<span className="text-3xl font-bold text-slate-600 mb-2">Build Profile</span>
-						<p className="text-slate-500">Let's see how much water you need</p>
+						<span className="
+							text-3xl font-bold text-slate-600 mb-2
+							dark:text-slate-100
+							">Build Profile</span>
+						<p className="
+							text-slate-500
+							dark:text-slate-400
+							">Let's see how much water you need</p>
 					</div>
 
 					<div className="space-y-6">
 						{/* ПОЛ */}
 						<div>
-							<label className="block text-slate-400 text-sm font-medium mb-2">Gender</label>
+							<label className="
+								block text-slate-400 text-sm font-medium mb-2
+								dark:text-slate-300
+								">Gender</label>
 							<div className="grid grid-cols-2 gap-2">
-								<button onClick={() => setGender('male')} className={`py-4 rounded-2xl font-bold transition-all ${gender === 'male' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Male</button>
-								<button onClick={() => setGender('female')} className={`py-4 rounded-2xl font-bold transition-all ${gender === 'female' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Female</button>
+								<button onClick={() => setGender('male')} className={`py-4 rounded-2xl font-bold transition-all ${gender === 'male' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Male</button>
+								<button onClick={() => setGender('female')} className={`py-4 rounded-2xl font-bold transition-all ${gender === 'female' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Female</button>
 							</div>
 						</div>
 
@@ -128,7 +143,7 @@ export default function Onboarding() {
 						<div className="flex gap-4">
 							<div className="flex-1">
 								<label 
-									className="block text-slate-400 text-sm font-medium mb-2"
+									className="dark:text-slate-300 block text-slate-400 text-sm font-medium mb-2"
 								>
 									Weight (kg)
 								</label>
@@ -136,7 +151,10 @@ export default function Onboarding() {
 									type="number" 
 									value={weight} 
 									onChange={(e) => setWeight(e.target.value)}
-									className="w-full bg-white text-slate-600 font-bold px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-blue-400 outline-none transition-all"
+									className="
+									w-full bg-white text-slate-600 font-bold px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-blue-400 outline-none transition-all
+									dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:focus:text-slate-200
+									"
 									placeholder="70"
 								/>
 							</div>
@@ -150,7 +168,10 @@ export default function Onboarding() {
 									type="number"
 									value={height}
 									onChange={(e) => setHeight(e.target.value)}
-									className="w-full bg-white text-slate-600 font-bold px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-blue-400 outline-none transition-all"
+									className="
+									w-full bg-white text-slate-600 font-bold px-4 py-3 rounded-2xl border-2 border-slate-300 focus:border-blue-400 outline-none transition-all
+									dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:focus:text-slate-200
+									"
 									placeholder="175"
 								/>
 							</div>
@@ -160,9 +181,9 @@ export default function Onboarding() {
 						<div>
                         <label className="block text-slate-400 text-sm font-medium mb-2">Activity Level</label>
                         <div className="grid grid-cols-3 gap-2">
-                            <button onClick={() => setActivity('low')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'low' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Low</button>
-                            <button onClick={() => setActivity('medium')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'medium' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Medium</button>
-                            <button onClick={() => setActivity('high')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'high' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>High</button>
+                            <button onClick={() => setActivity('low')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'low' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Low</button>
+                            <button onClick={() => setActivity('medium')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'medium' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Medium</button>
+                            <button onClick={() => setActivity('high')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${activity === 'high' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>High</button>
                         </div>
                     </div>
 
@@ -170,16 +191,16 @@ export default function Onboarding() {
                     <div>
                         <label className="block text-slate-400 text-sm font-medium mb-2">Weather</label>
                         <div className="grid grid-cols-3 gap-2">
-                            <button onClick={() => setWeather('cold')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'cold' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Cold</button>
-                            <button onClick={() => setWeather('temperate')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'temperate' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Temperate</button>
-                            <button onClick={() => setWeather('hot')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'hot' ? 'bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'bg-blue-100 text-slate-400 border border-slate-300'}`}>Hot</button>
+                            <button onClick={() => setWeather('cold')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'cold' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Cold</button>
+                            <button onClick={() => setWeather('temperate')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'temperate' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Temperate</button>
+                            <button onClick={() => setWeather('hot')} className={`py-2 rounded-xl text-sm font-medium transition-colors ${weather === 'hot' ? 'dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/50 bg-white text-slate-400 shadow-lg shadow-blue-500/30 border border-slate-400' : 'dark:bg-transparent dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 bg-blue-100 text-slate-400 border border-slate-300'}`}>Hot</button>
                         </div>
                     </div>
 
                     <button 
                         onClick={handleCalculate} 
                         disabled={!weight || !height || !gender} // Кнопка не нажмется, пока не заполнят базу!
-                        className="w-full bg-blue-500 disabled:bg-slate-200 disabled:text-slate-400 text-white px-6 py-3 rounded-xl font-bold mt-4 transition-all"
+                        className="w-full bg-blue-500 disabled:bg-slate-200 disabled:text-slate-400 text-white px-6 py-3 rounded-xl font-bold mt-4 transition-all dark:disabled:bg-slate-800 dark:disabled:text-slate-600"
                     >
                         Save Profile
                     </button>
