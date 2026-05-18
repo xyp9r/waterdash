@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FavoriteDrink } from '../hooks/useWaterData';
+// Импортируем кастомный хук темы
+import { useTheme } from '../context/ThemeContext';
+
 
 interface SettingsTabProps {
 		currentGoal: number;
@@ -19,9 +22,13 @@ export default function SettingsTab({ currentGoal, profile, onUpdateProfile, fav
 	const handleLogout = () => {
 		localStorage.removeItem('waterDashToken');
 		navigate('/login');
+	
 	};
 
 	const [tempValue, setTempValue] = useState<string | number>('');
+
+	// Достаем хук переключения темы
+	const {theme, toggleTheme} = useTheme();
 
 	useEffect(() => {
 			if (!activeModal) return;
@@ -66,6 +73,14 @@ export default function SettingsTab({ currentGoal, profile, onUpdateProfile, fav
 				<SettingItem label="Height" value={profile.height ? `${profile.height} cm` : 'Set'} onClick={() => setActiveModal('height')} />
 				<SettingItem label="Daily Goal" value={`${currentGoal} ml`} onClick={() => setActiveModal('goal')} highlight />
 			</div>
+
+			<button
+				onClick={() => toggleTheme()}
+				className="
+				bg-white text-slate-500 flex justify-between items-center w-full p-5 hover:bg-slate-50 transition-colors rounded-3xl p-5 bg-white border border-slate-100 shadow-sm last:border-0
+				">
+					<span>Theme</span> <span>{theme === 'light' ? 'Light ☀️ ' : 'Dark 🌙'}</span>
+				</button>
 
 			{/* БЛОК - ИЗБРАННЫЕ НАПИТКИ */}
 			{favoriteDrinks.length > 0 && (
