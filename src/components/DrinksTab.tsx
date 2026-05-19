@@ -54,7 +54,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 	return (
 		// УБРАЛИ класс 'relative' отсюда, чтобы блюр мог растянуться на весь телефон
 		<div className="flex flex-col h-full">
-			<h2 className="text-2xl font-bold text-slate-500 mb-6">Choose a Drink</h2>
+			<h2 className="text-2xl font-bold text-slate-500 mb-6 dark:text-slate-100">Choose a Drink</h2>
 
 			<div className="flex flex-col gap-3 overflow-y-auto pb-6 no-scrollbar">
 				{DRINK_TYPES.map((drink) => (
@@ -64,13 +64,14 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 							setSelectedDrink({ name: drink.name, icon: drink.icon });
 							setAmountStr('');
 						}}
-						className="p-5 rounded-3xl flex items-center gap-5 bg-white border border-slate-100 shadow-sm hover:border-slate-200 transition-all active:scale-95"
-					>
-
+						className="
+						p-5 rounded-3xl flex items-center gap-5 bg-white border border-slate-100 shadow-sm hover:border-slate-200 transition-all active:scale-95
+						dark:bg-slate-800/30 dark:border-slate-900 dark:hover:border-slate-800
+						">
 						<div className={`text-3xl p-3 rounded-full ${drink.color}`}>
 							{drink.icon}
 						</div>
-						<span className="text-slate-600 font-bold text-xl">{drink.name}</span>
+						<span className="text-slate-600 font-bold text-xl dark:text-slate-300">{drink.name}</span>
 					</button>
 				))}
 			</div>
@@ -85,7 +86,8 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 					/>
 
 					{/* Сама шторка */}
-					<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border border-slate-300/50 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up">
+					<div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-500/10 border-t border-slate-500 rounded-t-[2.5rem] p-6 shadow-[0_-15px-40px_rgba(0,0,0,0.5)] z-50 flex flex-col animate-slide-up
+							dark:bg-blue-900/10 dark:border-slate-700">
 						
 						{/* 🎯 ПРАВИЛЬНАЯ ШАПКА: relative обертка на всю ширину */}
 						<div className="relative w-full flex justify-center mb-6 pt-2">
@@ -100,7 +102,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 							{/* top-1/2 и -translate-y-1/2 ставят его ИДЕАЛЬНО по вертикальному центру этого блока! */}
 							<button
 								onClick={() => setSelectedDrink(null)}
-								className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white bg-slate-200 p-2 rounded-full active:scale-90 transition-colors"
+								className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white bg-slate-100/10 p-2 rounded-full active:scale-90 transition-colors dark:bg-blue-900/20"
 							>
 									{/* ИДЕАЛЬНО РОВНЫЙ КРЕСТИК */}
 									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +120,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 							<div className="relative flex items-center">
 								
 								{/* Сама цифра всегда железно по центру */}
-								<span className="text-slate-800 font-bold text-6xl tracking-tight">
+								<span className="text-slate-200 font-bold text-6xl tracking-tight">
 									{amountStr || '0'}
 								</span>
 
@@ -127,7 +129,7 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 								{/* ml-3 дает отступ от самой цифры */}
 								<div className="absolute left-full ml-3 flex items-center gap-3">
 									
-									<span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80">ml</span>
+									<span className="text-sm uppercase font-bold tracking-wider mt-2 opacity-80 text-slate-300">ml</span>
 									
 									{/* Кнопка удаления появляется только если есть цифры */}
 									{amountStr && (
@@ -161,23 +163,29 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 									<button
 										key={num}
 										onClick={() => handleNumpad(num)}
-										className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-300"
-									>
+										className="
+                      bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
+                      dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200
+                      ">
 										{num}
 									</button>
 								))}
 
 								<button
 									onClick={() => handleNumpad('00')}
-									className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300"
-								>
+									className="
+                   bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
+                   dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200
+                   ">
 									00
 								</button>
 
 								<button
 									onClick={() => handleNumpad('0')}
-									className="bg-white hover:bg-slate-300 active:bg-slate-600 text-slate-800 font-bold text-xl h-14 rounded-2xl transition-colors border border-slate-300"
-								>
+									className="
+                   bg-white/1 hover:bg-slate-100/10 active:bg-slate-600 text-slate-100 font-bold text-2xl h-14 rounded-2xl transition-colors border border-slate-600
+                   dark:bg-blue-900/10 dark:border-slate-800 dark:text-slate-200
+                   ">
 									0
 								</button>
 
@@ -185,8 +193,10 @@ export default function DrinksTab({ onAddDrink, favoriteDrinks, onSaveFavorite }
 								<button
 									onClick={handleSubmit}
 									disabled={!amountStr}
-									className="bg-blue-500 text-white disabled:bg-slate-200 disabled:text-slate-400 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg"
-								>
+									className="
+                    bg-blue-500/80 text-white disabled:bg-slate-900/10 disabled:text-slate-300 flex items-center justify-center h-14 rounded-2xl transition-all active:scale-95 shadow-lg
+                    dark:disabled:bg-slate-900/10 dark:bg-blue-900
+                         ">
 									<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
 								</button>
 							</div>
